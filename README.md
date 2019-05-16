@@ -28,39 +28,18 @@ STM32F407提供了工作频率为168 MHz的Cortex™-M4内核（具有浮点单�
 * STM32F407产品系列具有512KB-1MB Flash和192KB SRAM，采用尺寸小至10 x 10 mm的 100-176引脚封装。
 * 低电压：1.8V到3.6V VDD，在某些封装上可降低至1.7V
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 7436381fa23d0701c76f4f328d8dd822990f84e3
-
 ### [资源组成](https://github.com/sochub/STM32F407)
 
 * [参考文档](docs/)
 * [参考资源](src/)
 * [模板工程](demo/)
-
 * [编译工具](https://github.com/sochub/arm-none-eabi)
-* [stm32固件库](http://www.st.com/st-web-ui/static/active/en/st_prod_software_internet/resource/technical/software/firmware/stm32f4_dsp_stdperiph_lib.zip)
 
 ### [替换方案](https://github.com/sochub/STM32F407)
 
-<<<<<<< HEAD
 * 向下替换方案 [STM32F105](https://github.com/sochub/STM32F105) 
 * 同级替换方案 [STM32F429](https://github.com/sochub/STM32F429) 
 * 向上替换方案 [STM32H750](https://github.com/sochub/STM32H750) 
-
-### [参考资源](https://github.com/sochub/STM32F407)
-
-=======
-* [STM32F105](https://github.com/sochub/STM32F105) 
-* [STM32H750](https://github.com/sochub/STM32H750) 
-
-### [参考资源](https://github.com/sochub/STM32F407)
->>>>>>> 7436381fa23d0701c76f4f328d8dd822990f84e3
-
-* [STM32F407 Driver Lib](https://github.com/InfiniteYuan1/STM32F407DriverLib)
-* [SD card bootloader](https://github.com/autosportlabs/ASL_F4_bootloader)
-* [STM32F407工程模板](https://github.com/EmbolismSoil/STM32F407_LINUX)
 
 ##  [SoC资源平台](http://www.qitas.cn)
 

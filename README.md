@@ -3,7 +3,6 @@
 ####  qitas@qitas.cn
 #### 父级：[STM32F4](https://github.com/sochub/STM32F4)
 #### 归属：[Cortex-M4](https://github.com/sochub/CM4) 
-
 ### [芯片简介](https://github.com/sochub/STM32F407/wiki)
 
 STM32F407提供了工作频率为168 MHz的Cortex™-M4内核（具有浮点单元）的性能。向需要10 x 10 mm的封装内实现高集成度、高性能、嵌入式存储器和外设的医疗、工业与消费类应用。
@@ -18,7 +17,7 @@ STM32F407提供了工作频率为168 MHz的Cortex™-M4内核（具有浮点单�
 
 关键特性：
 
-* Core: ARM®32-bit Cortex®-M4 CPU with FPU,, frequency up to 168 MHz, 210 DMIPS/1.25 DMIPS/MHz (Dhrystone 2.1)
+* Core: ARM®32-bit Cortex®-M4 CPU with FPU,frequency up to 168 MHz, 210 DMIPS/1.25 DMIPS/MHz (Dhrystone 2.1)
 * Up to 1 Mbyte of Flash memory
 * Up to 192+4 Kbytes of SRAM including 64-Kbyte of CCM (core coupled memory) data RAM
 * 2个USB OTG（其中一个支持HS）
@@ -26,7 +25,10 @@ STM32F407提供了工作频率为168 MHz的Cortex™-M4内核（具有浮点单�
 * 通信接口多达15个（包括6个速度高达11.25 Mb/s的USART、3个速度高达45 Mb/s的SPI、3个I²C、2个CAN和1个SDIO）
 * 模拟：2个12位DAC、3个速度为2.4 MSPS或7.2 MSPS（交错模式）的12位ADC
 * 定时器多达17个：频率高达168 MHz的16和32位定时器
-* STM32F407产品系列具有512KB~1MB Flash和192KB SRAM，采用尺寸小至10 x 10 mm的 100~176引脚封装。
+* STM32F407产品系列具有512KB-1MB Flash和192KB SRAM，采用尺寸小至10 x 10 mm的 100-176引脚封装。
+* 低电压：1.8V到3.6V VDD，在某些封装上可降低至1.7V
+
+
 
 ### [资源组成](https://github.com/sochub/STM32F407)
 
@@ -36,9 +38,14 @@ STM32F407提供了工作频率为168 MHz的Cortex™-M4内核（具有浮点单�
 
 ### [替换方案](https://github.com/sochub/STM32F407)
 
+* [STM32F105](https://github.com/sochub/STM32F105) 
+* [STM32H750](https://github.com/sochub/STM32H750) 
 
-### [芯片应用](https://github.com/sochub/STM32F407)
+### [参考资源](https://github.com/sochub/STM32F407)
 
+* [STM32F407 Driver Lib](https://github.com/InfiniteYuan1/STM32F407DriverLib)
+* [SD card bootloader](https://github.com/autosportlabs/ASL_F4_bootloader)
+* [STM32F407工程模板](https://github.com/EmbolismSoil/STM32F407_LINUX)
 
 ##  [SoC资源平台](http://www.qitas.cn)
 

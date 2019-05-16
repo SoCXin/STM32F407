@@ -28,12 +28,13 @@ STM32F407提供了工作频率为168 MHz的Cortex™-M4内核（具有浮点单�
 * STM32F407产品系列具有512KB-1MB Flash和192KB SRAM，采用尺寸小至10 x 10 mm的 100-176引脚封装。
 * 低电压：1.8V到3.6V VDD，在某些封装上可降低至1.7V
 
-### [资源组成](https://github.com/sochub/STM32F407)
+### [收录资源](https://github.com/sochub/STM32F407)
 
 * [参考文档](docs/)
 * [参考资源](src/)
 * [模板工程](demo/)
 * [编译工具](https://github.com/sochub/arm-none-eabi)
+* [官方驱动库](https://github.com/sochub/STM32F4)
 
 ### [替换方案](https://github.com/sochub/STM32F407)
 

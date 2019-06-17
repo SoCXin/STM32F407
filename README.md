@@ -1,8 +1,8 @@
 ﻿# [STM32F407](https://github.com/sochub/STM32F407) 
 [![sites](SoC/qitas.png)](http://www.qitas.cn) 
-####  qitas@qitas.cn
+#### 厂商：[ST](https://github.com/sochub/ST)
 #### 父级：[STM32F4](https://github.com/sochub/STM32F4)
-#### 归属：[Cortex-M4](https://github.com/sochub/CM4) 
+#### 归属：[Cortex M4](https://github.com/sochub/CM4) 
 ### [芯片简介](https://github.com/sochub/STM32F407/wiki)
 
 STM32F407提供了工作频率为168 MHz的Cortex™-M4内核（具有浮点单元）的性能。向需要10 x 10 mm的封装内实现高集成度、高性能、嵌入式存储器和外设的医疗、工业与消费类应用。
@@ -14,6 +14,8 @@ STM32F407提供了工作频率为168 MHz的Cortex™-M4内核（具有浮点单�
 与STM32F4x5系列相比，STM32F407产品还具有符合IEEE 1588 v2标准要求的以太网MAC10/100和能够连接CMOS照相机传感器的8~14位并行照相机接口。
 
 [![sites](SoC/STM32F407.jpg)](https://www.st.com/en/microcontrollers-microprocessors/stm32f407-417.html#overview) 
+
+* [编译工具链](https://github.com/sochub/arm-none-eabi)
 
 关键特性：
 
@@ -32,9 +34,9 @@ STM32F407提供了工作频率为168 MHz的Cortex™-M4内核（具有浮点单�
 
 * [参考文档](docs/)
 * [参考资源](src/)
-* [模板工程](demo/)
-* [编译工具](https://github.com/sochub/arm-none-eabi)
-* [官方驱动库](https://github.com/sochub/STM32F4)
+    * [模板工程](demo/)
+* [freeRTOS系统](freeRTOS/)
+
 
 ### [替换方案](https://github.com/sochub/STM32F407)
 

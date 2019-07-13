@@ -35,8 +35,9 @@ STM32F407提供了工作频率为168 MHz的Cortex™-M4内核（具有浮点单�
 
 * [参考文档](docs/)
 * [参考资源](src/)
-    * [模板工程](demo/)
-* [freeRTOS系统](freeRTOS/)
+    * [make工程](src/make/)
+    * [模板工程](src/demo/)
+    * [freeRTOS系统](src/freeRTOS/)
 
 ### [关联资源](https://github.com/sochub)
 

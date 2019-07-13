@@ -44,8 +44,10 @@ STM32F407提供了工作频率为168 MHz的Cortex™-M4内核（具有浮点单�
 
 ### [选型建议](https://github.com/sochub)
 
+[STM32F407](https://github.com/sochub/STM32F407) 是性价比极高的一款产品，拥有大量该系列拥有的外设，也是在各种硬件中应用广泛的产品。
+
 * 向下替换方案 [STM32F105](https://github.com/sochub/STM32F105) 
-* 同级替换方案 [STM32F429](https://github.com/sochub/STM32F429) 
-* 向上替换方案 [STM32H750](https://github.com/sochub/STM32H750) 
+* 近似替换方案 [STM32F429](https://github.com/sochub/STM32F429) 
+* 性能替换方案 [STM32H750](https://github.com/sochub/STM32H750) 
 
 ##  [SoC资源平台](http://www.qitas.cn)

@@ -49,5 +49,3 @@ STM32F407提供了工作频率为168 MHz的Cortex™-M4内核（具有浮点单�
 * 向上替换方案 [STM32H750](https://github.com/sochub/STM32H750) 
 
 ##  [SoC资源平台](http://www.qitas.cn)
-
-

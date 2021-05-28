@@ -1,0 +1,31 @@
+{
+    "type":"MCU",
+    "name":"STM32F407",
+    "title": "ST STM32F407 MCU",
+    "description":"ST Cortex-M4 MCU",
+    "Core": {
+        "type":"Cortex-M4",
+        "Freq":72,
+        "DMIPS": 210,
+        "CoreMark": 566
+    },
+    "manufacturer": {
+        "vendor":"ST",
+        "homepage":"https://www.st.com"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SoCXin/STM32F407.git"
+    },
+    "version":"1.0.0",
+    "series":["STM32F407Z","STM32F407V","STM32F407R","STM32F407C","STM32F407T"],
+    "package":["LQFP144","LQFP100","LQFP64","LQFP48","QFN36"],
+    "peripheral": ["ADC","UART","I2C","SPI","PWM"],
+    "keywords": [
+        "dev-platform",
+        "ARM",
+        "Cortex-M",
+        "ADC","DAC","SDIO","CAN","I2C","RTC","SPI",
+        "3.6V","1.8V"
+    ]
+}

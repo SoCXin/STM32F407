@@ -1,0 +1,92 @@
+name: src
+
+on:
+  push:
+    paths:
+      - 'src/**'
+      - '**.yml'
+
+jobs:
+  template:
+    strategy:
+      fail-fast: false
+      matrix:
+        example:
+          - "spl"
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: make-action
+        uses: Qful/make-action@master
+        with:
+          release: 10-2020-q4
+
+      - uses: actions/checkout@v2
+        with:
+          submodules: "recursive"
+          fetch-depth: 1
+
+      - name: build
+        if: matrix.os == 'ubuntu-latest'
+        working-directory: src/template
+        run: |
+          make -C ${{ matrix.example }}
+
+      - name: build
+        if: matrix.os == 'windows-latest'
+        working-directory: src/template
+        run: |
+          make -C ${{ matrix.example }} SHELL=cmd
+
+      - name: build
+        if: matrix.os == 'macos-latest'
+        working-directory: src/template
+        run: |
+          brew install make
+          gmake -C ${{ matrix.example }}
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: template_${{ matrix.example }}_${{ matrix.os }}
+          path: src/template/build
+
+  # demo:
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       example:
+  #         - "1_blink"
+  #         - "2_blinkInt"
+  #         - "3_encoder"
+  #         - "4_motorFindZero"
+  #         - "5_SVPWM"
+  #         - "6_ADC"
+  #         - "7_currentReader"
+  #         - "8_clarke"
+  #         - "9_openLoopFOC"
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         submodules: "recursive"
+  #         fetch-depth: 1
+
+  #     - name: make action
+  #       uses: Qful/make-action@master
+  #       with:
+  #         release: 10-2020-q4
+
+  #     - name: build demo
+  #       working-directory: src/demo/${{ matrix.example }}
+  #       run: |
+  #         sudo apt update -y
+  #         sudo apt install -y cmake
+  #         mkdir build && cd build
+  #         cmake -D CMAKE_TOOLCHAIN_FILE=../../sys/cmake/arm-none-eabi.cmake -DCMAKE_BUILD_TYPE=Debug ..
+  #         make
+
+  #     - name: upload demo
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: demo_${{ matrix.example }}_${{ matrix.os }}
+  #         path: src/demo/${{ matrix.example }}/build

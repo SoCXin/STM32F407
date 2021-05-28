@@ -1,18 +1,3 @@
-# This is meant to be included in every project's Makefile after ensuring the
-# definition and/or inclusion of the following:
-#
-# PROJECT     : The project name
-# OBJS        : Object files meant to be linked to produce the final ELF
-# TODO: Should there be a common Makefile defining the following two?
-# OPENCM3_DIR : The libopencm3 directory [should be: ../opencm3]
-# DEVICE      : The STM32 board name [should be: STM32F407VG]
-#
-# include $(OPENCM3_DIR)/mk/genlink-config.mk should take care of the rest of
-# the variables : LDSCRIPT CPPFLAGS ARCH_FLAGS LIBDEPS LDLIBS
-#
-# Don't forget to include $(OPENCM3_DIR)/mk/genlink-rules.mk which is having the
-# rule to generate $(LDSCRIPT).
-
 CC = arm-none-eabi-gcc
 OBJCOPY = arm-none-eabi-objcopy
 FLASH = st-flash

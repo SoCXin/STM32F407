@@ -13,6 +13,7 @@ jobs:
       matrix:
         example:
           - "spl"
+          - "libopencm3"
         os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:

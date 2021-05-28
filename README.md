@@ -5,7 +5,7 @@
 [![Build Status](https://github.com/SoCXin/STM32F407/workflows/src/badge.svg)](https://github.com/SoCXin/STM32F407/actions/workflows/src.yml)
 
 * [ST](https://www.st.com/zh/): [Cortex-M4](https://github.com/SoCXin/Cortex)
-* [L3R4](https://github.com/SoCXin/Level): 168 MHz x 1.25 DMIPS/MHz (566CoreMark)
+* [L4R4](https://github.com/SoCXin/Level): 168 MHz x 1.25 DMIPS/MHz (566CoreMark)
 
 ## [简介](https://github.com/SoCXin/STM32F407/wiki)
 

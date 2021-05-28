@@ -36,9 +36,7 @@ SRC = main.c \
 	$(STLIB)/src/stm32f4xx_rcc.c \
 	$(STLIB)/src/stm32f4xx_gpio.c
 
-all: Build
-
-build: $(TARGET).bin
+all: $(TARGET).bin
 
 burn : $(TARGET).bin
 	openocd -f flash.cfg #-d3

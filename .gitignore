@@ -16,6 +16,7 @@ README*
 COPY*
 *CONTRIBU*
 LICENSE*
+HACKING*
 *.swp
 *.lck
 *.log
@@ -41,18 +42,19 @@ LICENSE*
 *_sc*
 *cm23*
 *cm33*
-*cm3*
+# *cm3*
 # *cm4*
 *cm7*
 *cm1*
 *cm0*
 *.uvgu*
-# .gitmodules
-*.png
+.gitmodules
+# *.png
 *.jpg
 *.rst
 .travis.yml
 doc
+*dox
 tests
 # mk
 *.md

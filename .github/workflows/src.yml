@@ -80,39 +80,39 @@ jobs:
           name: libopencm3
           path: src/template/libopencm3
 
-  demo:
-    strategy:
-      fail-fast: false
-      matrix:
-        example:
-          - "lan8720_lwip_chibios"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: "recursive"
-          fetch-depth: 1
+  # demo:
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       example:
+  #         - "grbl"
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         submodules: "recursive"
+  #         fetch-depth: 1
 
-      - name: make action
-        uses: Qful/make-action@master
-        with:
-          release: 10-2020-q4
+  #     - name: make action
+  #       uses: Qful/make-action@master
+  #       with:
+  #         release: 10-2020-q4
 
-      # - name: cmake demo
-      #   working-directory: src/demo/${{ matrix.example }}
-      #   run: |
-      #     sudo apt update -y
-      #     sudo apt install -y cmake
-      #     mkdir build && cd build
-      #     cmake -D CMAKE_TOOLCHAIN_FILE=../../sys/cmake/arm-none-eabi.cmake -DCMAKE_BUILD_TYPE=Debug ..
+  #     # - name: cmake demo
+  #     #   working-directory: src/demo/${{ matrix.example }}
+  #     #   run: |
+  #     #     sudo apt update -y
+  #     #     sudo apt install -y cmake
+  #     #     mkdir build && cd build
+  #     #     cmake -D CMAKE_TOOLCHAIN_FILE=../../sys/cmake/arm-none-eabi.cmake -DCMAKE_BUILD_TYPE=Debug ..
 
-      - name: build demo
-        working-directory: src/demo/${{ matrix.example }}
-        run: |
-          make
+  #     - name: build demo
+  #       working-directory: src/demo/${{ matrix.example }}
+  #       run: |
+  #         make
 
-      - name: upload demo
-        uses: actions/upload-artifact@v2
-        with:
-          name: demo_${{ matrix.example }}_${{ matrix.os }}
-          path: src/demo/${{ matrix.example }}/build
+  #     - name: upload demo
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: demo_${{ matrix.example }}_${{ matrix.os }}
+  #         path: src/demo/${{ matrix.example }}/build

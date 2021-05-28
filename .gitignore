@@ -36,6 +36,7 @@ HACKING*
 *.gbr
 *.drl
 *.ods
+*.odg
 *.csv
 *.xml
 *.pdf

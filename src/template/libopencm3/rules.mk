@@ -5,7 +5,7 @@ FLASH = st-flash
 USART_CONSOLE ?= USART2
 USART_BAUDRATE ?= 115200
 
-CPPFLAGS += -MD -Wall -Wundef -I. -I../include \
+CPPFLAGS += -MD -Wall -Wundef -I. -I./include \
             -DUSART_CONSOLE=$(USART_CONSOLE) -DUSART_BAUDRATE=$(USART_BAUDRATE)
 
 CFLAGS = -O0 -std=c99 -ggdb3 $(ARCH_FLAGS) -fno-common -ffunction-sections \

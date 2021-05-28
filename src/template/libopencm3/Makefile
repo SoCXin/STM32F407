@@ -1,4 +1,5 @@
 PROJECT = $(lastword $(subst /, ,$(CURDIR)))
+
 SRCS = main.c ./usart_printf/usart_printf.c
 OBJS = $(SRCS:%.c=%.o)
 

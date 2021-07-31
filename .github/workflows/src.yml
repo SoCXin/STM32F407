@@ -50,35 +50,35 @@ jobs:
           name: template_${{ matrix.example }}_${{ matrix.os }}
           path: src/template/build
 
-  build:
-    strategy:
-      fail-fast: false
-      matrix:
-        example:
-          - "libopencm3"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: "recursive"
-          fetch-depth: 1
+  # build:
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       example:
+  #         - "libopencm3"
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         submodules: "recursive"
+  #         fetch-depth: 1
 
-      - name: make action
-        uses: Qful/make-action@master
-        with:
-          release: 10-2020-q4
+  #     - name: make action
+  #       uses: Qful/make-action@master
+  #       with:
+  #         release: 10-2020-q4
 
-      - name: build libopencm3
-        working-directory: src/template/libopencm3
-        run: |
-          chmod +x libopencm3/scripts/*
-          make
+  #     - name: build libopencm3
+  #       working-directory: src/template/libopencm3
+  #       run: |
+  #         chmod +x libopencm3/scripts/*
+  #         make
 
-      - name: upload libopencm3
-        uses: actions/upload-artifact@v2
-        with:
-          name: libopencm3
-          path: src/template/libopencm3
+  #     - name: upload libopencm3
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: libopencm3
+  #         path: src/template/libopencm3
 
   # demo:
   #   strategy:

@@ -180,13 +180,13 @@ void MX_USART3_UART_Init(void)
 
 /* USER CODE BEGIN 1 */
 
-#include "stdio.h"
-int fputc(int ch, FILE *f)
-{
-  LL_USART_TransmitData8(USART1,(uint8_t)ch);
-	while (LL_USART_IsActiveFlag_TXE(USART1)== RESET);
-	return ch;
-}
+//#include "stdio.h"
+//int fputc(int ch, FILE *f)
+//{
+//  LL_USART_TransmitData8(USART1,(uint8_t)ch);
+//	while (LL_USART_IsActiveFlag_TXE(USART1)== RESET);
+//	return ch;
+//}
 
 /* USER CODE END 1 */
 

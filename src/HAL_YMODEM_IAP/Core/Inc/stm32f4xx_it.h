@@ -57,8 +57,10 @@ void DebugMon_Handler(void);
 void PendSV_Handler(void);
 void SysTick_Handler(void);
 void USART1_IRQHandler(void);
+void USART2_IRQHandler(void);
+void USART3_IRQHandler(void);
 /* USER CODE BEGIN EFP */
-void sys_com_regist_reccallback(uint32_t USARTx,void (*drv_com_m_handle)(unsigned char data));
+
 /* USER CODE END EFP */
 
 #ifdef __cplusplus

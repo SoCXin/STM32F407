@@ -82,6 +82,12 @@ void g_ymodem_rx_error_handle(int error_code)
 {
 	printf("--error code :%d--\r\n",error_code);
 }
+/******************************************************************************
+**函数信息 ：
+**功能描述 ：
+**输入参数 ：无
+**输出参数 ：无
+*******************************************************************************/
 // 接受head回调
 char g_ymodem_rx_head_handle(char *file_name,uint16_t file_name_len, uint32_t file_len)
 {
@@ -89,9 +95,15 @@ char g_ymodem_rx_head_handle(char *file_name,uint16_t file_name_len, uint32_t fi
 	FLASH_If_Erase( KAPP_ADDR);
 	return 0;
 }
-uint32_t app_addr = KAPP_ADDR;
 
+/******************************************************************************
+**函数信息 ：
+**功能描述 ：
+**输入参数 ：无
+**输出参数 ：无
+*******************************************************************************/
 // 接受数据回调
+uint32_t app_addr = KAPP_ADDR;
 void g_ymodem_rx_data_handle(char *data, uint16_t len,uint32_t download_byte,uint8_t percent)
 {
 	printf("data len:%d  %d %d\r\n",len,download_byte ,percent);
@@ -99,11 +111,17 @@ void g_ymodem_rx_data_handle(char *data, uint16_t len,uint32_t download_byte,uin
 	{
 		app_addr += len;
 		printf("data write ok\r\n");
-	}else{
+	}
+  else{
 		printf("data write error\r\n");
 	}
 }
-
+/******************************************************************************
+**函数信息 ：
+**功能描述 ：
+**输入参数 ：无
+**输出参数 ：无
+*******************************************************************************/
 // 接受完成回调
 void g_ymodem_rx_finish_handle(int state)
 {
@@ -114,7 +132,12 @@ void g_ymodem_rx_finish_handle(int state)
 		printf("--file end error1 :%d--\r\n",state);
 	}
 }
-
+/******************************************************************************
+**函数信息 ：
+**功能描述 ：
+**输入参数 ：无
+**输出参数 ：无
+*******************************************************************************/
 //--- sent
 char name[] = "testupload.txt";
 char file[] = "asdjlfaj129384719823749817239847198273498sdflajsldfjalsdjflasa134917239419823749817298347918237haksjdhfkahsdfkjhaskdjfhkahsd123456789";
@@ -159,11 +182,15 @@ int main(void)
   MX_GPIO_Init();
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
 
 	LL_USART_EnableIT_RXNE(USART1);
 	LL_USART_EnableIT_PE(USART1);
-
+	LL_USART_EnableIT_RXNE(USART2);
+	LL_USART_EnableIT_PE(USART2);
+	LL_USART_EnableIT_RXNE(USART3);
+	LL_USART_EnableIT_PE(USART3);
 
 	dev_comctrl_init();
 	dev_comctrl_regist_rx_callback(g_com_rx_callBack);

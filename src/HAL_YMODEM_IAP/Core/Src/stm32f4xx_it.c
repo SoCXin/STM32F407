@@ -27,15 +27,12 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
-
+#include "kymodem.h"
 /* USER CODE END TD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-void (*drv_com1_handle)(unsigned char data);
-void (*drv_com2_handle)(unsigned char data);
-void (*drv_com3_handle)(unsigned char data);
-void (*drv_com4_handle)(unsigned char data);
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -206,10 +203,9 @@ void SysTick_Handler(void)
 void USART1_IRQHandler(void)
 {
   /* USER CODE BEGIN USART1_IRQn 0 */
-  if(LL_USART_IsActiveFlag_RXNE(USART1)) 
+  if(LL_USART_IsActiveFlag_RXNE(USART1))
 	{
-		 drv_com1_handle(LL_USART_ReceiveData8(USART1));
-		
+    drv_com1_handle(LL_USART_ReceiveData8(USART1));
 	}
   /* USER CODE END USART1_IRQn 0 */
   /* USER CODE BEGIN USART1_IRQn 1 */
@@ -217,25 +213,39 @@ void USART1_IRQHandler(void)
   /* USER CODE END USART1_IRQn 1 */
 }
 
-/* USER CODE BEGIN 1 */
-void sys_com_regist_reccallback(uint32_t USARTx,void (*drv_com_m_handle)(unsigned char data))
+/**
+  * @brief This function handles USART2 global interrupt.
+  */
+void USART2_IRQHandler(void)
 {
-	switch(USARTx)
+  /* USER CODE BEGIN USART2_IRQn 0 */
+
+  /* USER CODE END USART2_IRQn 0 */
+  /* USER CODE BEGIN USART2_IRQn 1 */
+  if(LL_USART_IsActiveFlag_RXNE(USART2))
 	{
-		case 1:
-			
-			drv_com1_handle = drv_com_m_handle;
-			break;
-		case 2:
-			drv_com2_handle = drv_com_m_handle;
-			break;
-		case 3:
-			drv_com3_handle = drv_com_m_handle;
-			break;
-		case 4:
-			drv_com4_handle = drv_com_m_handle;
-			break;
+    drv_com2_handle(LL_USART_ReceiveData8(USART2));
 	}
+  /* USER CODE END USART2_IRQn 1 */
 }
+
+/**
+  * @brief This function handles USART3 global interrupt.
+  */
+void USART3_IRQHandler(void)
+{
+  /* USER CODE BEGIN USART3_IRQn 0 */
+
+  /* USER CODE END USART3_IRQn 0 */
+  /* USER CODE BEGIN USART3_IRQn 1 */
+  if(LL_USART_IsActiveFlag_RXNE(USART3))
+	{
+    drv_com3_handle(LL_USART_ReceiveData8(USART3));
+	}
+  /* USER CODE END USART3_IRQn 1 */
+}
+
+/* USER CODE BEGIN 1 */
+
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

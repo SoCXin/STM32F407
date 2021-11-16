@@ -1,102 +1,51 @@
-/*----------------------------------------------------------------------------------------------------------------
- * Copyright(c)
- * ---------------------------------------------------------------------------------------------------------------
- * File Name : dev_comctrl.c
- * Author    : ygl
- * Brief     : ¶Ë¿Ú¹ÜÀí
- * Date      : 2018.11.18
- * ---------------------------------------------------------------------------------------------------------------
- * Modifier                                    Data                                             Brief
- * -------------------------------------------------------------------------------------------------------------*/
 
 #include "dev_com.h"
 #include "drv_com.h"
-
-
-// ×Ô¶¨ÒåµÄ»º³å
+#include <string.h>
 Com_paser_BuffTypedef m_com_buf;
-// ½ÓÊÕ»Øµ÷º¯Êı
+// æ¥æ”¶å›è°ƒå‡½æ•°
 void (*m_com_rev_callBack)(unsigned char* data,uint32_t size) = 0;
 
-static void dev_comctrl_buff_init(void);
-static void dev_comctrl_interrput_rx_handle(uint8_t data);
-static void dev_comctrl_tx_handle(void);
-static void dev_comctrl_rx_handle(void);
 
-/**
-* @ Function Name : dev_comctrl_init
-* @ Author        : ygl
-* @ Brief         : ¶Ë¿Ú¿ØÖÆÆ÷³õÊ¼»¯
-* @ Date          : 2018.11.18
-* @ Modify        : ...
-**/
-void dev_comctrl_init(void)
+/******************************************************************************
+**å‡½æ•°ä¿¡æ¯ ï¼š
+**åŠŸèƒ½æè¿° ï¼š
+**è¾“å…¥å‚æ•° ï¼šæ— 
+**è¾“å‡ºå‚æ•° ï¼šæ— 
+*******************************************************************************/
+
+static void dev_comctrl_buff_init(void)
 {
-	dev_comctrl_buff_init();
-	driver_com_regist_reccallback(1,dev_comctrl_interrput_rx_handle);
-	//drv_com_printf(com1,"this is from com1");
-}
-/**
-* @ Function Name : dev_comctrl_handle
-* @ Author        : ygl
-* @ Brief         : ¶Ë¿Ú¿ØÖÆÆ÷´¦Àíº¯Êı
-* @ Date          : 2018.11.18
-* @ Modify        : ...
-**/
-void dev_comctrl_handle(void){
-    dev_comctrl_tx_handle();
-    dev_comctrl_rx_handle();
-}
-/**
-* @ Function Name : dev_comctrl_handle
-* @ Author        : ygl
-* @ Brief         : ¶Ë¿Ú¿ØÖÆÆ÷×¢²á½ÓÊÕ»Øµ÷º¯Êı
-* @ Date          : 2018.11.18
-* @ Modify        : ...
-**/
-void dev_comctrl_regist_rx_callback(void (*arg_callBack)(unsigned char* data,uint32_t size)){
-	m_com_rev_callBack = arg_callBack;
-}
-/**
-* @ Function Name : dev_comctrl_buff_init
-* @ Author        : ygl
-* @ Brief         : Êı¾İ³õÊ¼»¯
-* @ Date          : 2018.11.18
-* @ Modify        : ...
-**/
-static void dev_comctrl_buff_init(void){
-	// Çå¿Õ»º³åÇø
+	// æ¸…ç©ºç¼“å†²åŒº
 	memset(&m_com_buf,0,sizeof(Com_paser_BuffTypedef));
 }
 
+/******************************************************************************
+**å‡½æ•°ä¿¡æ¯ ï¼š
+**åŠŸèƒ½æè¿° ï¼š
+**è¾“å…¥å‚æ•° ï¼šæ— 
+**è¾“å‡ºå‚æ•° ï¼šæ— 
+*******************************************************************************/
 
-/**
-* @ Function Name : dev_comctrl_rx_handle(u8 data)
-* @ Author        : ygl
-* @ Brief         : ´®¿ÚÖĞ¶Ï½ÓÊÕº¯Êı
-* @ Date          : 2018.11.18
-* @ Modify        : ...
-**/
 static void dev_comctrl_interrput_rx_handle(uint8_t data){
-	// ½ÓÊÕ»º³åÇøÌí¼ÓÊı¾İ
+	// æ¥æ”¶ç¼“å†²åŒºæ·»åŠ æ•°æ®
 	m_com_buf.Rx_part[m_com_buf.Rx_write++] = data;
-	// Èç¹û´ïµ½Ä©Î²,Ğ´Ö¸Õë¹éÁã
+	// å¦‚æœè¾¾åˆ°æœ«å°¾,å†™æŒ‡é’ˆå½’é›¶
 	if(m_com_buf.Rx_write >= RX_BUFF_SIZE)
 		m_com_buf.Rx_write = 0;
 }
 
-
-/**
-* @ Function Name : dev_comctrl_handle
-* @ Author        : ygl
-* @ Brief         : ¶Ë¿Ú¿ØÖÆÆ÷½ÓÊÕ´¦Àí
-* @ Date          : 2018.11.18
-* @ Modify        : ...
-**/
-static void dev_comctrl_rx_handle(void){
+/******************************************************************************
+**å‡½æ•°ä¿¡æ¯ ï¼š
+**åŠŸèƒ½æè¿° ï¼š
+**è¾“å…¥å‚æ•° ï¼šæ— 
+**è¾“å‡ºå‚æ•° ï¼šæ— 
+*******************************************************************************/
+static void dev_comctrl_rx_handle(void)
+{
     int offset_dir;
     uint32_t temp;
-    // »ñÈ¡Æ«²îÁ¿
+    // è·å–åå·®é‡
     offset_dir = m_com_buf.Rx_write - m_com_buf.Rx_read;
 
     if(offset_dir > 0)
@@ -120,15 +69,48 @@ static void dev_comctrl_rx_handle(void){
         m_com_buf.Rx_read = (m_com_buf.Rx_read >= RX_BUFF_SIZE) ? 0 : m_com_buf.Rx_read;
     }
 }
+/******************************************************************************
+**å‡½æ•°ä¿¡æ¯ ï¼š
+**åŠŸèƒ½æè¿° ï¼š
+**è¾“å…¥å‚æ•° ï¼šæ— 
+**è¾“å‡ºå‚æ•° ï¼šæ— 
+*******************************************************************************/
 
-/**
-* @ Function Name : dev_comctrl_handle
-* @ Author        : ygl
-* @ Brief         : ¶Ë¿Ú¿ØÖÆÆ÷·¢ËÍ´¦Àíº¯Êı
-* @ Date          : 2018.11.18
-* @ Modify        : ...
-**/
-static void dev_comctrl_tx_handle(void){
+static void dev_comctrl_tx_handle(void)
+{
 
 }
 
+/******************************************************************************
+**å‡½æ•°ä¿¡æ¯ ï¼š
+**åŠŸèƒ½æè¿° ï¼š
+**è¾“å…¥å‚æ•° ï¼šæ— 
+**è¾“å‡ºå‚æ•° ï¼šæ— 
+*******************************************************************************/
+void dev_comctrl_init(void)
+{
+	dev_comctrl_buff_init();
+	driver_com_regist_reccallback(1,dev_comctrl_interrput_rx_handle);
+	//drv_com_printf(com1,"this is from com1");
+}
+/******************************************************************************
+**å‡½æ•°ä¿¡æ¯ ï¼š
+**åŠŸèƒ½æè¿° ï¼š
+**è¾“å…¥å‚æ•° ï¼šæ— 
+**è¾“å‡ºå‚æ•° ï¼šæ— 
+*******************************************************************************/
+void dev_comctrl_handle(void)
+{
+    dev_comctrl_tx_handle();
+    dev_comctrl_rx_handle();
+}
+/******************************************************************************
+**å‡½æ•°ä¿¡æ¯ ï¼š
+**åŠŸèƒ½æè¿° ï¼š
+**è¾“å…¥å‚æ•° ï¼šæ— 
+**è¾“å‡ºå‚æ•° ï¼šæ— 
+*******************************************************************************/
+void dev_comctrl_regist_rx_callback(void (*arg_callBack)(unsigned char* data,uint32_t size))
+{
+	m_com_rev_callBack = arg_callBack;
+}

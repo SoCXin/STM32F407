@@ -140,9 +140,14 @@ typedef struct Ymodem_TypeDef_TAG
 }Ymodem_TypeDef;
 
 // ≥ı ºªØ
+
+extern void (*drv_com1_handle)(unsigned char data);
+extern void (*drv_com2_handle)(unsigned char data);
+extern void (*drv_com3_handle)(unsigned char data);
+extern void (*drv_com4_handle)(unsigned char data);
+extern void sys_com_regist_reccallback(uint32_t USARTx,void (*drv_com_m_handle)(unsigned char data));
+
 void ymodem_init(Ymodem_TypeDef *ymodem);
-
-
 void ymodem_rx_handle(uint8_t *data,uint32_t len);
 void ymodem_rx_time_handle(void);
 

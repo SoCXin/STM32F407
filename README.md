@@ -5,7 +5,7 @@
 [![Build Status](https://github.com/SoCXin/STM32F407/workflows/src/badge.svg)](https://github.com/SoCXin/STM32F407/actions/workflows/src.yml)
 
 * [ST](https://www.st.com/zh/): [Cortex-M4](https://github.com/SoCXin/Cortex)
-* [L5R5](https://github.com/SoCXin/Level): 168 MHz (210DMIPS/566CoreMark)
+* [L5R5](https://github.com/SoCXin/Level): 168 MHz (210DMIPS,566CoreMark)
 
 ## [简介](https://github.com/SoCXin/STM32F407/wiki)
 
@@ -24,6 +24,8 @@
 * [参考资源](src/)
 * [参考文档](docs/)
 * [参考工程](project/)
+* [入门教程](https://docs.soc.xin/STM32F407)
+
 
 ### [选型建议](https://github.com/SoCXin)
 
@@ -41,7 +43,7 @@
 
 [![sites](docs/F1VSF4.jpg)](http://www.elecfans.com/d/1153505.html)
 
-### 相关开发板
+### 开发板资源
 
 [![sites](docs/B.jpg)](https://item.taobao.com/item.htm?spm=a230r.1.14.26.4a7b590aNYyHg2&id=560814289385&ns=1&abbucket=19#detail)
 

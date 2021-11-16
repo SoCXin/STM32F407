@@ -579,7 +579,7 @@
 
   <Group>
     <GroupName>IAP</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -590,7 +590,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Core\Src\Src\dev_com.c</PathWithFileName>
+      <PathWithFileName>..\..\Ymodem\Src\dev_com.c</PathWithFileName>
       <FilenameWithoutPath>dev_com.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -602,7 +602,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Core\Src\Src\drv_com.c</PathWithFileName>
+      <PathWithFileName>..\..\Ymodem\Src\drv_com.c</PathWithFileName>
       <FilenameWithoutPath>drv_com.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -614,7 +614,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Core\Src\Src\flash_if.c</PathWithFileName>
+      <PathWithFileName>..\..\Ymodem\Src\flash_if.c</PathWithFileName>
       <FilenameWithoutPath>flash_if.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -626,7 +626,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Core\Src\Src\iap.c</PathWithFileName>
+      <PathWithFileName>..\..\Ymodem\Src\iap.c</PathWithFileName>
       <FilenameWithoutPath>iap.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -638,7 +638,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Core\Src\Src\kymodem.c</PathWithFileName>
+      <PathWithFileName>..\..\Ymodem\Src\kymodem.c</PathWithFileName>
       <FilenameWithoutPath>kymodem.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -650,7 +650,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Core\Src\Src\stmflash.c</PathWithFileName>
+      <PathWithFileName>..\..\Ymodem\Src\stmflash.c</PathWithFileName>
       <FilenameWithoutPath>stmflash.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>

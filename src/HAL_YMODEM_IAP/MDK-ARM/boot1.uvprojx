@@ -313,7 +313,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>1</Optim>
+            <Optim>4</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx,USE_FULL_LL_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;..\Core\Inc\Inc</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;..\..\Ymodem\Inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -546,32 +546,32 @@
             <File>
               <FileName>dev_com.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Core\Src\Src\dev_com.c</FilePath>
+              <FilePath>..\..\Ymodem\Src\dev_com.c</FilePath>
             </File>
             <File>
               <FileName>drv_com.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Core\Src\Src\drv_com.c</FilePath>
+              <FilePath>..\..\Ymodem\Src\drv_com.c</FilePath>
             </File>
             <File>
               <FileName>flash_if.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Core\Src\Src\flash_if.c</FilePath>
+              <FilePath>..\..\Ymodem\Src\flash_if.c</FilePath>
             </File>
             <File>
               <FileName>iap.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Core\Src\Src\iap.c</FilePath>
+              <FilePath>..\..\Ymodem\Src\iap.c</FilePath>
             </File>
             <File>
               <FileName>kymodem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Core\Src\Src\kymodem.c</FilePath>
+              <FilePath>..\..\Ymodem\Src\kymodem.c</FilePath>
             </File>
             <File>
               <FileName>stmflash.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Core\Src\Src\stmflash.c</FilePath>
+              <FilePath>..\..\Ymodem\Src\stmflash.c</FilePath>
             </File>
           </Files>
         </Group>

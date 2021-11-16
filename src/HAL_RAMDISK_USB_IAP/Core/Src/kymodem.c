@@ -399,8 +399,8 @@ static char ymodem_tx_packet(uint8_t data)
     // sent data
     case PACKET_TX_WAIT_SENT_DATA_ACK:
         if((data == CNC && g_modem_tx_packet.now_packet_index ==1|| data == ACK)) {
-						
-						
+
+
             uint16_t packet_sent_size = ymodem_tx_data_packet(&g_modem_tx_packet.packet_file.file_ptr,g_tx_buff,g_modem_tx_packet.now_packet_index, g_modem_tx_packet.packet_file.remain_file_size,PACKET_SENT_MODE_AUTO);
             //g_modem_tx_packet.packet_file.file_ptr += packet_sent_size;
 						g_modem_tx_packet.packet_file.sent_rec_file_size += packet_sent_size;
@@ -441,7 +441,7 @@ static char ymodem_tx_packet(uint8_t data)
     case PACKET_TX_WAIT_END_C:
         if(data == CNC) {
             ymodem_tx_end_packet(g_tx_buff);
-						printf("sent end\r\n");
+            printf("sent end\r\n");
         }
         break;
     default:
@@ -532,11 +532,11 @@ static uint32_t ymodem_tx_data_packet(uint8_t **p_source, uint8_t *p_packet, uin
     // 剩余的数据用128字节还是1K字节传输
     packet_size = size_blk >= PACKET_1K_SIZE ? PACKET_1K_SIZE : PACKET_SIZE;
 		// 系统调用读取函数
-		
+
     // 剩余的数据需要的填充
     size = size_blk < packet_size ? size_blk : packet_size;
 
-		
+
 	  g_ymodem.ymodem_tx_data_handle(p_source, size,g_modem_tx_packet.packet_file.sent_rec_file_size,g_modem_tx_packet.packet_file.remain_file_size,g_modem_tx_packet.packet_file.percent);
 		printf("--:P addr:%x\r\n",*p_source);
     // 1K字节传输

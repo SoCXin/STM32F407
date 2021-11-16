@@ -67,7 +67,7 @@ void SystemClock_Config(void);
 
 #define USE_RX_MODE
 #define KAPP_ADDR  (uint32_t)0x08004000
-// ´®¿Ú½ÓÊÜ»Øµ÷
+// ä¸²å£æ¥å—å›è°ƒ
 void g_com_rx_callBack(unsigned char* data,uint32_t size)
 {
 	#ifdef USE_RX_MODE
@@ -77,18 +77,18 @@ void g_com_rx_callBack(unsigned char* data,uint32_t size)
 	#endif
 }
 
-// ´®¿Ú´íÎó»Øµ÷
+// ä¸²å£é”™è¯¯å›è°ƒ
 void g_ymodem_rx_error_handle(int error_code)
 {
 	printf("--error code :%d--\r\n",error_code);
 }
 /******************************************************************************
-**º¯ÊıĞÅÏ¢ £º
-**¹¦ÄÜÃèÊö £º
-**ÊäÈë²ÎÊı £ºÎŞ
-**Êä³ö²ÎÊı £ºÎŞ
+**å‡½æ•°ä¿¡æ¯ ï¼š
+**åŠŸèƒ½æè¿° ï¼š
+**è¾“å…¥å‚æ•° ï¼šæ— 
+**è¾“å‡ºå‚æ•° ï¼šæ— 
 *******************************************************************************/
-// ½ÓÊÜhead»Øµ÷
+// æ¥å—headå›è°ƒ
 char g_ymodem_rx_head_handle(char *file_name,uint16_t file_name_len, uint32_t file_len)
 {
 	printf("file:%s %d\r\n",file_name,file_len);
@@ -97,12 +97,12 @@ char g_ymodem_rx_head_handle(char *file_name,uint16_t file_name_len, uint32_t fi
 }
 
 /******************************************************************************
-**º¯ÊıĞÅÏ¢ £º
-**¹¦ÄÜÃèÊö £º
-**ÊäÈë²ÎÊı £ºÎŞ
-**Êä³ö²ÎÊı £ºÎŞ
+**å‡½æ•°ä¿¡æ¯ ï¼š
+**åŠŸèƒ½æè¿° ï¼š
+**è¾“å…¥å‚æ•° ï¼šæ— 
+**è¾“å‡ºå‚æ•° ï¼šæ— 
 *******************************************************************************/
-// ½ÓÊÜÊı¾İ»Øµ÷
+// æ¥å—æ•°æ®å›è°ƒ
 uint32_t app_addr = KAPP_ADDR;
 void g_ymodem_rx_data_handle(char *data, uint16_t len,uint32_t download_byte,uint8_t percent)
 {
@@ -117,35 +117,33 @@ void g_ymodem_rx_data_handle(char *data, uint16_t len,uint32_t download_byte,uin
 	}
 }
 /******************************************************************************
-**º¯ÊıĞÅÏ¢ £º
-**¹¦ÄÜÃèÊö £º
-**ÊäÈë²ÎÊı £ºÎŞ
-**Êä³ö²ÎÊı £ºÎŞ
+**å‡½æ•°ä¿¡æ¯ ï¼š
+**åŠŸèƒ½æè¿° ï¼šæ¥å—å®Œæˆå›è°ƒ
+**è¾“å…¥å‚æ•° ï¼šæ— 
+**è¾“å‡ºå‚æ•° ï¼šæ— 
 *******************************************************************************/
-// ½ÓÊÜÍê³É»Øµ÷
 void g_ymodem_rx_finish_handle(int state)
 {
-	if(state ==0){
-		printf("--file end--\r\n");
-		iap_load_app(KAPP_ADDR);
-	}else{
-		printf("--file end error1 :%d--\r\n",state);
-	}
+    if(state ==0){
+        printf("--file end--\r\n");
+        iap_load_app(KAPP_ADDR);
+    }else{
+        printf("--file end error1 :%d--\r\n",state);
+    }
 }
 /******************************************************************************
-**º¯ÊıĞÅÏ¢ £º
-**¹¦ÄÜÃèÊö £º
-**ÊäÈë²ÎÊı £ºÎŞ
-**Êä³ö²ÎÊı £ºÎŞ
+**å‡½æ•°ä¿¡æ¯ ï¼š
+**åŠŸèƒ½æè¿° ï¼šå‘é€æ•°æ®å¤„ç†
+**è¾“å…¥å‚æ•° ï¼šæ— 
+**è¾“å‡ºå‚æ•° ï¼šæ— 
 *******************************************************************************/
-//--- sent
 char name[] = "testupload.txt";
 char file[] = "asdjlfaj129384719823749817239847198273498sdflajsldfjalsdjflasa134917239419823749817298347918237haksjdhfkahsdfkjhaskdjfhkahsd123456789";
-// ·¢ËÍÊı¾İ´¦Àí
+//
 void g_ymodem_tx_data_handle(uint8_t **file_read_addr, uint32_t  file_read_size, uint32_t file_has_read_size,  uint32_t file_remain_size,uint8_t percent)
 {
 	printf("read size:%d  has_read:%d  remain:%d  per:%d\r\n",file_read_size,file_has_read_size,  file_remain_size,percent);
-			// Ö¸ÕëÖ¸ÏòµÄµØÖ· ÖØĞÂÖ¸Ïò
+			// æŒ‡é’ˆæŒ‡å‘çš„åœ°å€ é‡æ–°æŒ‡å‘
 		*file_read_addr = &file[file_has_read_size];
 }
 
@@ -197,7 +195,7 @@ int main(void)
 
 
 	Ymodem_TypeDef ymodem;
-	ymodem.ymodem_write_byte = drv_com1_write;
+	ymodem.ymodem_write_byte = drv_com2_write;
 	ymodem.ymodem_rx_error_handle = g_ymodem_rx_error_handle;
 	ymodem.ymodem_rx_head_handle = g_ymodem_rx_head_handle;
 	ymodem.ymodem_rx_data_handle = g_ymodem_rx_data_handle;

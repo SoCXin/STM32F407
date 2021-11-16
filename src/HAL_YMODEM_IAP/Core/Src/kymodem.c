@@ -1,7 +1,7 @@
 #include "kymodem.h"
 #include "usart.h"
 #include "drv_com.h"
-#include "string.h"
+#include <string.h>
 
 
 ModemFrameTypedef g_frame;
@@ -20,19 +20,17 @@ static void crc16_sum(uint8_t data);
 static char ymodem_parser_head(uint8_t  *buf, uint32_t sz ) ;
 static void parser_frame_reset(void);
 static char parser_frame(uint8_t data);
-
-
-
-static char ymodem_tx_packet(uint8_t data);
-void ymodem_tx_head_packet(uint8_t *p_data, const uint8_t *p_file_name,uint32_t file_name_length, uint32_t length,uint32_t  packet_size);
 static uint32_t ymodem_tx_data_packet(uint8_t **p_source, uint8_t *p_packet, uint8_t pkt_nr, uint32_t size_blk, uint8_t sent_mode);
 static void ymodem_tx_end_packet(uint8_t *p_data);
+static char ymodem_tx_packet(uint8_t data);
+
+void ymodem_tx_head_packet(uint8_t *p_data, const uint8_t *p_file_name,uint32_t file_name_length, uint32_t length,uint32_t  packet_size);
 
 /******************************************************************************
-**º¯ÊıĞÅÏ¢ £º
-**¹¦ÄÜÃèÊö £º
-**ÊäÈë²ÎÊı £ºÎŞ
-**Êä³ö²ÎÊı £ºÎŞ
+**å‡½æ•°ä¿¡æ¯ ï¼š
+**åŠŸèƒ½æè¿° ï¼š
+**è¾“å…¥å‚æ•° ï¼šæ— 
+**è¾“å‡ºå‚æ•° ï¼šæ— 
 *******************************************************************************/
 void (*drv_com1_handle)(unsigned char data);
 void (*drv_com2_handle)(unsigned char data);
@@ -58,34 +56,35 @@ void sys_com_regist_reccallback(uint32_t USARTx,void (*drv_com_m_handle)(unsigne
 }
 
 /******************************************************************************
-**º¯ÊıĞÅÏ¢ £º
-**¹¦ÄÜÃèÊö £º
-**ÊäÈë²ÎÊı £ºÎŞ
-**Êä³ö²ÎÊı £ºÎŞ
+**å‡½æ•°ä¿¡æ¯ ï¼š
+**åŠŸèƒ½æè¿° ï¼š
+**è¾“å…¥å‚æ•° ï¼šæ— 
+**è¾“å‡ºå‚æ•° ï¼šæ— 
 *******************************************************************************/
-void ymodem_init(Ymodem_TypeDef *ymodem)
-{
-    g_ymodem = *ymodem;
-}
-// ¸´Î»
+
 static void ymodem_reset()
 {
     memset(&g_frame,0,sizeof(g_frame));
 }
-
+/******************************************************************************
+**å‡½æ•°ä¿¡æ¯ ï¼š
+**åŠŸèƒ½æè¿° ï¼š
+**è¾“å…¥å‚æ•° ï¼šæ— 
+**è¾“å‡ºå‚æ•° ï¼šæ— 
+*******************************************************************************/
 __IO char g_write_C_disable = 0;
-// ½ÓÊÜ
+// æ¥å—
 void ymodem_rx_handle(uint8_t *data,uint32_t rx_size)
 {
     int error_code = 0;
     g_write_C_disable = 1;
     for(int i =0; i<rx_size; i++) {
 
-        //½âÎöÊı¾İ°ü³É¹¦
+        //è§£ææ•°æ®åŒ…æˆåŠŸ
         if(parser_frame(data[i])) {
             //printf("jiexi:%d",g_frame.head);
             g_modem_rx_packet.now_packet_index = g_frame.index;
-            // Èç¹ûÖØ¸´µÄindex,¾ÍÊÇÉÏÎ»»úÖĞÖ¹ÁË
+            // å¦‚æœé‡å¤çš„index,å°±æ˜¯ä¸Šä½æœºä¸­æ­¢äº†
             if(g_modem_rx_packet.now_packet_index == g_modem_rx_packet.last_packet_index && g_modem_rx_packet.last_packet_index!=0 && g_frame.head!=EOT)
             {
                 error_code = FRAME_PARSER_ABORT_ERROR;
@@ -94,7 +93,7 @@ void ymodem_rx_handle(uint8_t *data,uint32_t rx_size)
                 goto error_exit;
             }
 
-            // ÒÑ¾­½ÓÊÜµ½ÁËÊı¾İ
+            // å·²ç»æ¥å—åˆ°äº†æ•°æ®
             if(g_modem_rx_packet.packet_state == PACKET_RX_WAIT)
             {
                 g_modem_rx_packet.packet_state = PACKET_RX_FIND_HEAD;
@@ -125,19 +124,19 @@ void ymodem_rx_handle(uint8_t *data,uint32_t rx_size)
                     error_code = FRAME_PARSER_HEAD_NOT_HAND;
                     goto error_exit;
                 }
-                drv_com1_write(ACK);
+                g_ymodem.ymodem_write_byte(ACK);
                 break;
             case PACKET_RX_FIND_DATA:
 
 
-                // Èç¹û·¢ËÍÁËEOT,´ú±íÊı¾İ´«ÊäÍê³É
+                // å¦‚æœå‘é€äº†EOT,ä»£è¡¨æ•°æ®ä¼ è¾“å®Œæˆ
                 if(g_frame.head == EOT) {
-                    // ÏÈ·¢ËÍNAK
-                    drv_com1_write(NAK);
+                    // å…ˆå‘é€NAK
+                    g_ymodem.ymodem_write_byte(NAK);
                     g_modem_rx_packet.packet_state = PACKET_RX_FIND_END;
-                    // Êı¾İ¿ÉÄÜÓÃSOH 128»òÕßSTX 1024´«Êä
+                    // æ•°æ®å¯èƒ½ç”¨SOH 128æˆ–è€…STX 1024ä¼ è¾“
                 } else if(g_frame.head ==SOH || g_frame.head==STX) {
-                    drv_com1_write(ACK);
+                    g_ymodem.ymodem_write_byte(ACK);
                     uint32_t offset =g_modem_rx_packet.packet_file.file_size - g_modem_rx_packet.packet_file.sent_rec_file_size;
                     uint32_t data_size = 0;
                     if(g_frame.head ==SOH) {
@@ -163,12 +162,12 @@ void ymodem_rx_handle(uint8_t *data,uint32_t rx_size)
 
                 break;
             case PACKET_RX_FIND_END:
-                drv_com1_write(ACK);
-                // Èç¹ûÊÇEOT,Òª·¢ËÍ"C"
+                g_ymodem.ymodem_write_byte(ACK);
+                // å¦‚æœæ˜¯EOT,è¦å‘é€"C"
                 if(g_frame.head == EOT) {
                     g_write_C_disable = 0;
                     //g_write_C_disable = 0;
-                    // Èç¹û·¢ËÍÁËSOH,²é¿´ÀïÃæÓĞÃ»ÓĞÎÄ¼ş,Ã»ÓĞÎÄ¼ş´ú±í´«Êä½áÊø
+                    // å¦‚æœå‘é€äº†SOH,æŸ¥çœ‹é‡Œé¢æœ‰æ²¡æœ‰æ–‡ä»¶,æ²¡æœ‰æ–‡ä»¶ä»£è¡¨ä¼ è¾“ç»“æŸ
                 } else if(g_frame.head == SOH) {
 
                     if(g_modem_rx_packet.packet_file.file_size == g_modem_rx_packet.packet_file.sent_rec_file_size) {
@@ -204,20 +203,20 @@ error_exit:
 
 
 int i = 0;
-// ½ÓÊÜÊ±¼ä´¦Àí
+// æ¥å—æ—¶é—´å¤„ç†
 void ymodem_rx_time_handle(void)
 {
     if(i++ <1000000) {
     } else {
         i = 0;
         if(g_write_C_disable==0) {
-            drv_com1_write(CNC);
+            g_ymodem.ymodem_write_byte(CNC);
         }
     }
 }
 
 
-// int×ª×Ö·û´®
+// intè½¬å­—ç¬¦ä¸²
 static void Int2Str(uint8_t *p_str, uint32_t intnum)
 {
     uint32_t i, divider = 1000000000, pos = 0, status = 0;
@@ -240,7 +239,7 @@ static void Int2Str(uint8_t *p_str, uint32_t intnum)
 }
 
 
-// ×Ö·û´®×ªstr
+// å­—ç¬¦ä¸²è½¬str
 static unsigned long str_to_u32(char* str)
 {
     const char *s = str;
@@ -300,8 +299,8 @@ static void crc16_sum(uint8_t data)
     }
 }
 
-// ½âÎöÍ·²¿ĞÅÏ¢
-static char ymodem_parser_head(uint8_t  *buf, uint32_t sz ) //½âÎö³öÍ·°üÖĞµÄÎÄ¼şÃûºÍ´óĞ¡
+// è§£æå¤´éƒ¨ä¿¡æ¯
+static char ymodem_parser_head(uint8_t  *buf, uint32_t sz ) //è§£æå‡ºå¤´åŒ…ä¸­çš„æ–‡ä»¶åå’Œå¤§å°
 {
 
     uint8_t *fil_nm;
@@ -320,7 +319,7 @@ static char ymodem_parser_head(uint8_t  *buf, uint32_t sz ) //½âÎö³öÍ·°üÖĞµÄÎÄ¼ş
 }
 
 
-// ½âÎöÆ÷³õÊ¼»¯
+// è§£æå™¨åˆå§‹åŒ–
 static void parser_frame_reset(void)
 {
     g_frame_state.frame_state = FRAME_FIND_HEAD;
@@ -328,7 +327,7 @@ static void parser_frame_reset(void)
 }
 
 
-// ½âÎöÊı¾İÖ¡
+// è§£ææ•°æ®å¸§
 static char parser_frame(uint8_t data)
 {
     switch(g_frame_state.frame_state)
@@ -392,12 +391,88 @@ static char parser_frame(uint8_t data)
     return FRAME_PARSER_RUN;
 }
 
+/******************************************************************************
+**å‡½æ•°ä¿¡æ¯ ï¼š
+**åŠŸèƒ½æè¿° ï¼š
+**è¾“å…¥å‚æ•° ï¼šæ— 
+**è¾“å‡ºå‚æ•° ï¼šæ— 
+*******************************************************************************/
+// æ‰“åŒ…å‘é€æ•°æ®åŒ…
+static uint32_t ymodem_tx_data_packet(uint8_t **p_source, uint8_t *p_packet, uint8_t pkt_nr, uint32_t size_blk, uint8_t sent_mode)
+{
+    uint8_t *p_record;
+    uint32_t i, size, packet_size;
+    unsigned short mcrc = 0;
 
-/// ------------- sent
+    // å‰©ä½™çš„æ•°æ®ç”¨128å­—èŠ‚è¿˜æ˜¯1Kå­—èŠ‚ä¼ è¾“
+    packet_size = size_blk >= PACKET_1K_SIZE ? PACKET_1K_SIZE : PACKET_SIZE;
+		// ç³»ç»Ÿè°ƒç”¨è¯»å–å‡½æ•°
+
+    // å‰©ä½™çš„æ•°æ®éœ€è¦çš„å¡«å……
+    size = size_blk < packet_size ? size_blk : packet_size;
+
+
+    g_ymodem.ymodem_tx_data_handle(p_source, size,g_modem_tx_packet.packet_file.sent_rec_file_size,g_modem_tx_packet.packet_file.remain_file_size,g_modem_tx_packet.packet_file.percent);
+    printf("--:P addr:%x\r\n",*p_source);
+    // 1Kå­—èŠ‚ä¼ è¾“
+    if (packet_size == PACKET_1K_SIZE)
+    {
+        p_packet[0] = STX;
+    }
+    else
+    {
+        p_packet[0] = SOH;
+    }
+    // å¡«å……å¸§å¤´
+    p_packet[1] = pkt_nr;
+    p_packet[2] = (~pkt_nr);
+    p_record = *p_source;
+
+    // å¡«å……æ•°æ®
+    for (i = 3; i < size + 3; i++)
+    {
+        p_packet[i] = *p_record++;
+    }
+    if ( size  <= packet_size)
+    {
+        for (i = size + 3; i < packet_size + 3; i++)
+        {
+            p_packet[i] = 0x1A; /* EOF (0x1A) or 0x00 */
+        }
+    }
+
+    // è®¡ç®—CRC
+    mcrc = crc16(p_packet+3,i-3);
+    p_packet[i] = mcrc>>8;
+    p_packet[i+1] = mcrc&0xff;
+
+    for(int i = 0; i<packet_size + 5; i++) {
+        g_ymodem.ymodem_write_byte(p_packet[i]);
+    }
+    return packet_size;
+}
 
 
 
-// ³õÊ¼»¯·¢ËÍ
+
+/******************************************************************************
+**å‡½æ•°ä¿¡æ¯ ï¼š
+**åŠŸèƒ½æè¿° ï¼š
+**è¾“å…¥å‚æ•° ï¼šæ— 
+**è¾“å‡ºå‚æ•° ï¼šæ— 
+*******************************************************************************/
+void ymodem_init(Ymodem_TypeDef *ymodem)
+{
+    g_ymodem = *ymodem;
+}
+// å¤ä½
+
+/******************************************************************************
+**å‡½æ•°ä¿¡æ¯ ï¼š
+**åŠŸèƒ½æè¿° ï¼š
+**è¾“å…¥å‚æ•° ï¼šæ— 
+**è¾“å‡ºå‚æ•° ï¼šæ— 
+*******************************************************************************/
 void ymodem_tx_init(char *file_name,char file_name_len,uint32_t file_size)
 {
 		// cpy file name
@@ -407,7 +482,12 @@ void ymodem_tx_init(char *file_name,char file_name_len,uint32_t file_size)
 }
 
 
-// tx Êı¾İ°ü
+/******************************************************************************
+**å‡½æ•°ä¿¡æ¯ ï¼š
+**åŠŸèƒ½æè¿° ï¼š
+**è¾“å…¥å‚æ•° ï¼šæ— 
+**è¾“å‡ºå‚æ•° ï¼šæ— 
+*******************************************************************************/
 static char ymodem_tx_packet(uint8_t data)
 {
     switch(g_modem_tx_packet.packet_state)
@@ -450,7 +530,7 @@ static char ymodem_tx_packet(uint8_t data)
     case PACKET_TX_WAIT_END_DATA_ACK:
         if(data == ACK) {
             g_modem_tx_packet.packet_state=PACKET_TX_WAIT_FIRST_EOT_ACK_NCK;
-            drv_com1_write(EOT);
+            g_ymodem.ymodem_write_byte(EOT);
             return 0;
         }
 
@@ -482,7 +562,12 @@ static char ymodem_tx_packet(uint8_t data)
 
 }
 
-// ÂÖÑ¯´¦Àí
+/******************************************************************************
+**å‡½æ•°ä¿¡æ¯ ï¼š
+**åŠŸèƒ½æè¿° ï¼š
+**è¾“å…¥å‚æ•° ï¼šæ— 
+**è¾“å‡ºå‚æ•° ï¼šæ— 
+*******************************************************************************/
 void ymodem_tx_handle(uint8_t  *buf, uint32_t sz)
 {
     for(int i = 0; i<sz; i++) {
@@ -491,8 +576,12 @@ void ymodem_tx_handle(uint8_t  *buf, uint32_t sz)
 }
 
 
-
-// ´ò°ü·¢ËÍÍ·
+/******************************************************************************
+**å‡½æ•°ä¿¡æ¯ ï¼š
+**åŠŸèƒ½æè¿° ï¼š
+**è¾“å…¥å‚æ•° ï¼šæ— 
+**è¾“å‡ºå‚æ•° ï¼šæ— 
+*******************************************************************************/
 void ymodem_tx_head_packet(uint8_t *p_data, const uint8_t *p_file_name,uint32_t file_name_length, uint32_t length,uint32_t  packet_size)
 {
     uint32_t i, j = 0;
@@ -549,64 +638,6 @@ static void ymodem_tx_end_packet(uint8_t *p_data)
     for(int i = 0; i< PACKET_SIZE + 5; i++) {
         g_ymodem.ymodem_write_byte(p_data[i]);
     }
-}
-
-
-
-
-// ´ò°ü·¢ËÍÊı¾İ°ü
-static uint32_t ymodem_tx_data_packet(uint8_t **p_source, uint8_t *p_packet, uint8_t pkt_nr, uint32_t size_blk, uint8_t sent_mode)
-{
-    uint8_t *p_record;
-    uint32_t i, size, packet_size;
-    unsigned short mcrc = 0;
-
-    // Ê£ÓàµÄÊı¾İÓÃ128×Ö½Ú»¹ÊÇ1K×Ö½Ú´«Êä
-    packet_size = size_blk >= PACKET_1K_SIZE ? PACKET_1K_SIZE : PACKET_SIZE;
-		// ÏµÍ³µ÷ÓÃ¶ÁÈ¡º¯Êı
-
-    // Ê£ÓàµÄÊı¾İĞèÒªµÄÌî³ä
-    size = size_blk < packet_size ? size_blk : packet_size;
-
-
-	  g_ymodem.ymodem_tx_data_handle(p_source, size,g_modem_tx_packet.packet_file.sent_rec_file_size,g_modem_tx_packet.packet_file.remain_file_size,g_modem_tx_packet.packet_file.percent);
-		printf("--:P addr:%x\r\n",*p_source);
-    // 1K×Ö½Ú´«Êä
-    if (packet_size == PACKET_1K_SIZE)
-    {
-        p_packet[0] = STX;
-    }
-    else
-    {
-        p_packet[0] = SOH;
-    }
-    // Ìî³äÖ¡Í·
-    p_packet[1] = pkt_nr;
-    p_packet[2] = (~pkt_nr);
-    p_record = *p_source;
-
-    // Ìî³äÊı¾İ
-    for (i = 3; i < size + 3; i++)
-    {
-        p_packet[i] = *p_record++;
-    }
-    if ( size  <= packet_size)
-    {
-        for (i = size + 3; i < packet_size + 3; i++)
-        {
-            p_packet[i] = 0x1A; /* EOF (0x1A) or 0x00 */
-        }
-    }
-
-    // ¼ÆËãCRC
-    mcrc = crc16(p_packet+3,i-3);
-    p_packet[i] = mcrc>>8;
-    p_packet[i+1] = mcrc&0xff;
-
-    for(int i = 0; i<packet_size + 5; i++) {
-        g_ymodem.ymodem_write_byte(p_packet[i]);
-    }
-    return packet_size;
 }
 
 

@@ -75,7 +75,6 @@ static void dev_comctrl_rx_handle(void)
 **输入参数 ：无
 **输出参数 ：无
 *******************************************************************************/
-
 static void dev_comctrl_tx_handle(void)
 {
 
@@ -90,7 +89,7 @@ static void dev_comctrl_tx_handle(void)
 void dev_comctrl_init(void)
 {
 	dev_comctrl_buff_init();
-	driver_com_regist_reccallback(1,dev_comctrl_interrput_rx_handle);
+	driver_com_regist_reccallback(2,dev_comctrl_interrput_rx_handle);
 	//drv_com_printf(com1,"this is from com1");
 }
 /******************************************************************************

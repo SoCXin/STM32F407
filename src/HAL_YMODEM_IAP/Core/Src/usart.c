@@ -183,8 +183,8 @@ void MX_USART3_UART_Init(void)
 #include "stdio.h"
 int fputc(int ch, FILE *f)
 {
-  LL_USART_TransmitData8(USART2,(uint8_t)ch);
-	while (LL_USART_IsActiveFlag_TXE(USART2)== RESET);		
+  LL_USART_TransmitData8(USART1,(uint8_t)ch);
+	while (LL_USART_IsActiveFlag_TXE(USART1)== RESET);
 	return ch;
 }
 

@@ -180,11 +180,10 @@ int main(void)
 
 	ymodem_init(&ymodem);
 
-	printf("init\r\n");
+	printf("qitas init\r\n");
 
 	FLASH_If_Init();
 	ymodem_tx_init(name,sizeof(name),sizeof(file)-1);
-
 
   /* USER CODE END 2 */
 

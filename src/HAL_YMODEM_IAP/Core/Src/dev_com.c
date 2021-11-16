@@ -8,7 +8,7 @@
  * ---------------------------------------------------------------------------------------------------------------
  * Modifier                                    Data                                             Brief
  * -------------------------------------------------------------------------------------------------------------*/
- 
+
 #include "dev_com.h"
 #include "drv_com.h"
 
@@ -31,7 +31,7 @@ static void dev_comctrl_rx_handle(void);
 * @ Modify        : ...
 **/
 void dev_comctrl_init(void)
-{	
+{
 	dev_comctrl_buff_init();
 	driver_com_regist_reccallback(1,dev_comctrl_interrput_rx_handle);
 	//drv_com_printf(com1,"this is from com1");
@@ -44,8 +44,8 @@ void dev_comctrl_init(void)
 * @ Modify        : ...
 **/
 void dev_comctrl_handle(void){
-	 dev_comctrl_tx_handle();
-	 dev_comctrl_rx_handle();
+    dev_comctrl_tx_handle();
+    dev_comctrl_rx_handle();
 }
 /**
 * @ Function Name : dev_comctrl_handle
@@ -94,7 +94,7 @@ static void dev_comctrl_interrput_rx_handle(uint8_t data){
 * @ Modify        : ...
 **/
 static void dev_comctrl_rx_handle(void){
-	  int offset_dir;
+    int offset_dir;
     uint32_t temp;
     // »ñÈ¡Æ«²îÁ¿
     offset_dir = m_com_buf.Rx_write - m_com_buf.Rx_read;
@@ -129,6 +129,6 @@ static void dev_comctrl_rx_handle(void){
 * @ Modify        : ...
 **/
 static void dev_comctrl_tx_handle(void){
-	
+
 }
 

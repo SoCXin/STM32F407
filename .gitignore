@@ -39,7 +39,7 @@ HACKING*
 *.odg
 *.csv
 *.xml
-*.pdf
+# *.pdf
 *_sc*
 *cm23*
 *cm33*
@@ -72,7 +72,7 @@ Doxyfile
 *32h*
 *32f7*
 # *32f4*
-# *32f3*
+*32f3*
 *32f2*
 *32f0*
 *32l*

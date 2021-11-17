@@ -8,7 +8,7 @@
 #include "common.h"
 
 #define USE_RX_MODE
-#define KAPP_ADDR  (uint32_t)0x08004000
+// #define USER_APP1_ADDRESS  (uint32_t)0x08004000
 
 
 #include <stdio.h>
@@ -54,7 +54,7 @@ void g_ymodem_rx_error_handle(int error_code)
 char g_ymodem_rx_head_handle(char *file_name,uint16_t file_name_len, uint32_t file_len)
 {
 	printf("file:%s %d\r\n",file_name,file_len);
-	FLASH_If_Erase( KAPP_ADDR);
+	FLASH_If_Erase( USER_APP1_ADDRESS);
 	return 0;
 }
 
@@ -64,7 +64,7 @@ char g_ymodem_rx_head_handle(char *file_name,uint16_t file_name_len, uint32_t fi
 **输入参数 ：无
 **输出参数 ：无
 *******************************************************************************/
-uint32_t app_addr = KAPP_ADDR;
+uint32_t app_addr = USER_APP1_ADDRESS;
 void g_ymodem_rx_data_handle(char *data, uint16_t len,uint32_t download_byte,uint8_t percent)
 {
 	printf("data len:%d  %d %d\r\n",len,download_byte ,percent);
@@ -88,7 +88,8 @@ void g_ymodem_rx_finish_handle(int state)
     if(state ==0)
     {
         printf("--file end--\r\n");
-        iap_load_app(KAPP_ADDR);
+        Mark_Set(bkp_app1, 1);
+        iap_load_app(USER_APP1_ADDRESS);
     }
     else
     {
@@ -119,13 +120,17 @@ void g_ymodem_tx_data_handle(uint8_t **file_read_addr, uint32_t  file_read_size,
 *******************************************************************************/
 void test(void)
 {
+    iap_load_app(USER_APP1_ADDRESS);
 	LL_USART_EnableIT_RXNE(USART1);
 	LL_USART_EnableIT_PE(USART1);
 	LL_USART_EnableIT_RXNE(USART2);
 	LL_USART_EnableIT_PE(USART2);
 	LL_USART_EnableIT_RXNE(USART3);
 	LL_USART_EnableIT_PE(USART3);
-
+    if(Mark_Get(bkp_app1))
+    {
+        iap_load_app(USER_APP1_ADDRESS);
+    }
 	dev_comctrl_init();
 	dev_comctrl_regist_rx_callback(g_com_rx_callBack);
 

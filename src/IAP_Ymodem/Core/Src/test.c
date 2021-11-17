@@ -44,6 +44,27 @@ void g_ymodem_rx_error_handle(int error_code)
 {
 	printf("--error code :%d--\r\n",error_code);
 }
+
+/******************************************************************************
+**函数信息 ：
+**功能描述 ：接受数据回调
+**输入参数 ：无
+**输出参数 ：无
+*******************************************************************************/
+static uint32_t app_addr = KAPP_ADDR;
+void g_ymodem_rx_data_handle(char *data, uint16_t len,uint32_t download_byte,uint8_t percent)
+{
+	printf("data:%d %d [%d]\r\n",len,download_byte,percent);
+	if (FLASH_If_Write(app_addr,(uint32_t*) data,len/4) == FLASHIF_OK)
+	{
+		app_addr += len;
+        // printf("data write ok\r\n");
+	}
+    else
+    {
+		printf("data write error\r\n");
+	}
+}
 /******************************************************************************
 **函数信息 ：
 **功能描述 ：接受head回调
@@ -52,30 +73,12 @@ void g_ymodem_rx_error_handle(int error_code)
 *******************************************************************************/
 char g_ymodem_rx_head_handle(char *file_name,uint16_t file_name_len, uint32_t file_len)
 {
-	printf("file:%s %d\r\n",file_name,file_len);
-	FLASH_If_Erase( KAPP_ADDR);
-	return 0;
+    app_addr = KAPP_ADDR;
+    printf("\r\nfile:%s %d\r\n",file_name,file_len);
+    // FLASH_If_Erase(KAPP_ADDR);
+    return 0;
 }
 
-/******************************************************************************
-**函数信息 ：
-**功能描述 ：接受数据回调
-**输入参数 ：无
-**输出参数 ：无
-*******************************************************************************/
-uint32_t app_addr = KAPP_ADDR;
-void g_ymodem_rx_data_handle(char *data, uint16_t len,uint32_t download_byte,uint8_t percent)
-{
-	printf("data len:%d  %d %d\r\n",len,download_byte ,percent);
-	if (FLASH_If_Write(app_addr,(uint32_t*) data,len/4) == FLASHIF_OK)
-	{
-		app_addr += len;
-		printf("data write ok\r\n");
-	}
-    else{
-		printf("data write error\r\n");
-	}
-}
 /******************************************************************************
 **函数信息 ：
 **功能描述 ：接受完成回调
@@ -84,11 +87,15 @@ void g_ymodem_rx_data_handle(char *data, uint16_t len,uint32_t download_byte,uin
 *******************************************************************************/
 void g_ymodem_rx_finish_handle(int state)
 {
-    if(state ==0){
-        printf("--file end--\r\n");
+    if(state ==0)
+    {
+        app_addr = KAPP_ADDR;
+        printf("\r\n--file end--\r\n");
         iap_load_app(KAPP_ADDR);
-    }else{
-        printf("--file end error1 :%d--\r\n",state);
+    }
+    else
+    {
+        printf("\r\n--file end error :%d--\r\n",state);
     }
 }
 /******************************************************************************

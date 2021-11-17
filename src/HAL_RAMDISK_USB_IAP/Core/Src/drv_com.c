@@ -43,6 +43,7 @@ void drv_com1_write(uint8_t data)
 void drv_com2_write(uint8_t data)
 {
 	LL_USART_TransmitData8(USART2,data);
+	while (LL_USART_IsActiveFlag_TXE(USART2)== RESET);
 }
 /******************************************************************************
 **函数信息 ：
@@ -53,6 +54,7 @@ void drv_com2_write(uint8_t data)
 void drv_com3_write(uint8_t data)
 {
 	LL_USART_TransmitData8(USART3,data);
+	while (LL_USART_IsActiveFlag_TXE(USART3)== RESET);
 }
 /******************************************************************************
 **函数信息 ：

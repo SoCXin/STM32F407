@@ -67,6 +67,37 @@ void g_ymodem_rx_data_handle(char *data, uint16_t len,uint32_t download_byte,uin
 }
 /******************************************************************************
 **函数信息 ：
+**功能描述 ：
+**输入参数 ：无
+**输出参数 ：无
+*******************************************************************************/
+// uint32_t FLASH_Erase(uint32_t StartSector)
+// {
+//     uint32_t UserStartSector;
+//     uint32_t SectorError;
+//     FLASH_EraseInitTypeDef pEraseInit;
+
+//   /* Unlock the Flash to enable the flash control register access *************/
+//     HAL_FLASH_Unlock();
+//   /* Clear pending flags (if any) */
+//     __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR |
+//                         FLASH_FLAG_PGAERR | FLASH_FLAG_PGPERR | FLASH_FLAG_PGSERR);
+//     /* Get the sector where start the user flash area */
+//     UserStartSector = GetSector(StartSector);
+//     pEraseInit.TypeErase = TYPEERASE_SECTORS;
+//     pEraseInit.Sector = UserStartSector;
+//     pEraseInit.NbSectors = 6;
+//     pEraseInit.VoltageRange = VOLTAGE_RANGE_3;
+
+//     if (HAL_FLASHEx_Erase(&pEraseInit, &SectorError) != HAL_OK)
+//     {
+//         /* Error occurred while page erase */
+//         return (1);
+//     }
+//     return (0);
+// }
+/******************************************************************************
+**函数信息 ：
 **功能描述 ：接受head回调
 **输入参数 ：无
 **输出参数 ：无
@@ -75,8 +106,23 @@ char g_ymodem_rx_head_handle(char *file_name,uint16_t file_name_len, uint32_t fi
 {
     app_addr = KAPP_ADDR;
     printf("\r\nfile:%s %d\r\n",file_name,file_len);
-    // FLASH_If_Erase(KAPP_ADDR);
+    FLASH_If_Erase(KAPP_ADDR);
     return 0;
+}
+
+void iap_load_app(uint32_t addr)
+{
+    typedef  void (*pFunction)(void);
+    if (((*(__IO uint32_t*)addr) & 0x2FFE0000 ) == 0x20000000)
+    {
+        // __disable_irq();     	//关总中断
+        pFunction jump_app=(pFunction)*(__IO uint32_t*)(addr+4);
+        __set_PSP(*(__IO uint32_t*) addr);
+        __set_MSP(*(__IO uint32_t*) addr);
+        __set_CONTROL(0);
+        SCB->VTOR = addr;
+        jump_app();
+    }
 }
 
 /******************************************************************************

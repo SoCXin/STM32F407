@@ -1,45 +1,45 @@
 #include "iap.h"
 
 
-#include "stmflash.h"
+// #include "stmflash.h"
+// typedef  void (*iapfun)(void);
+// iapfun jump_app;
 
-typedef  void (*iapfun)(void);
-iapfun jump_app;
-uint32_t iapbuf[512]; 	//2K字节缓存
+// uint32_t iapbuf[512]; 	//2K字节缓存
 
-__asm void MSR_MSP(uint32_t addr)
-{
-    MSR MSP, r0 			//set Main Stack value
-    BX r14
-}
+// __asm void MSR_MSP(uint32_t addr)
+// {
+//     MSR MSP, r0 			//set Main Stack value
+//     BX r14
+// }
 
 //appxaddr:应用程序的起始地址
 //appbuf:应用程序CODE.
 //appsize:应用程序大小(字节).
-void iap_write_appbin(uint32_t appxaddr,uint8_t *appbuf,uint32_t appsize)
-{
-    uint32_t t;
-    uint16_t i=0;
-    uint32_t temp;
-    uint32_t fwaddr=appxaddr;//当前写入的地址
-    uint8_t *dfu=appbuf;
-    for(t=0; t<appsize; t+=4)
-    {
-        temp=(uint32_t)dfu[3]<<24;
-        temp|=(uint32_t)dfu[2]<<16;
-        temp|=(uint32_t)dfu[1]<<8;
-        temp|=(uint32_t)dfu[0];
-        dfu+=4;//偏移4个字节
-        iapbuf[i++]=temp;
-        if(i==512)
-        {
-            i=0;
-            STMFLASH_Write(fwaddr,iapbuf,512);
-            fwaddr+=2048;//偏移2048  512*4=2048
-        }
-    }
-    if(i)STMFLASH_Write(fwaddr,iapbuf,i);//将最后的一些内容字节写进去.
-}
+// void iap_write_appbin(uint32_t appxaddr,uint8_t *appbuf,uint32_t appsize)
+// {
+//     uint32_t t;
+//     uint16_t i=0;
+//     uint32_t temp;
+//     uint32_t fwaddr=appxaddr;//当前写入的地址
+//     uint8_t *dfu=appbuf;
+//     for(t=0; t<appsize; t+=4)
+//     {
+//         temp=(uint32_t)dfu[3]<<24;
+//         temp|=(uint32_t)dfu[2]<<16;
+//         temp|=(uint32_t)dfu[1]<<8;
+//         temp|=(uint32_t)dfu[0];
+//         dfu+=4;//偏移4个字节
+//         iapbuf[i++]=temp;
+//         if(i==512)
+//         {
+//             i=0;
+//             STMFLASH_Write(fwaddr,iapbuf,512);
+//             fwaddr+=2048;//偏移2048  512*4=2048
+//         }
+//     }
+//     if(i)STMFLASH_Write(fwaddr,iapbuf,i);//将最后的一些内容字节写进去.
+// }
 
 //跳转到应用程序段
 //appxaddr:用户代码起始地址.

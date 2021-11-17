@@ -564,19 +564,9 @@
               <FilePath>..\..\Ymodem\Src\flash_if.c</FilePath>
             </File>
             <File>
-              <FileName>iap.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Ymodem\Src\iap.c</FilePath>
-            </File>
-            <File>
               <FileName>kymodem.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Ymodem\Src\kymodem.c</FilePath>
-            </File>
-            <File>
-              <FileName>stmflash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Ymodem\Src\stmflash.c</FilePath>
             </File>
           </Files>
         </Group>

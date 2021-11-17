@@ -1,8 +1,8 @@
-#include "kymodem.h"
-#include "usart.h"
-#include "drv_com.h"
 #include <string.h>
-
+#include <stdio.h>
+#include "ymodem.h"
+#include "drv_com.h"
+#include "usart.h"
 
 ModemFrameTypedef g_frame;
 ModemFrameStateTypedef  g_frame_state;
@@ -74,21 +74,20 @@ void ymodem_rx_handle(uint8_t *data,uint32_t rx_size)
 {
     int error_code = 0;
     g_write_C_disable = 1;
-    for(int i =0; i<rx_size; i++) {
-
+    for(int i =0; i<rx_size; i++)
+    {
         //解析数据包成功
-        if(parser_frame(data[i])) {
-            //printf("jiexi:%d",g_frame.head);
+        if(parser_frame(data[i]))
+        {
+            printf("jiexi:%d\r\n",g_frame.head);
             g_modem_rx_packet.now_packet_index = g_frame.index;
             // 如果重复的index,就是上位机中止了
             if(g_modem_rx_packet.now_packet_index == g_modem_rx_packet.last_packet_index && g_modem_rx_packet.last_packet_index!=0 && g_frame.head!=EOT)
             {
                 error_code = FRAME_PARSER_ABORT_ERROR;
-
                 g_ymodem.ymodem_rx_finish_handle(PACKET_RX_ABORT_ERROR);
                 goto error_exit;
             }
-
             // 已经接受到了数据
             if(g_modem_rx_packet.packet_state == PACKET_RX_WAIT)
             {
@@ -96,61 +95,74 @@ void ymodem_rx_handle(uint8_t *data,uint32_t rx_size)
             }
             switch(g_modem_rx_packet.packet_state)
             {
-            case PACKET_RX_WAIT:
-
-                break;
-            case PACKET_RX_FIND_HEAD:
-                // ack
-                // find head
-                if((g_frame.head == SOH || g_frame.head == STX)&& g_frame.index == 0) {
-                    // find file name
-                    if(ymodem_parser_head(g_frame.data,g_frame_state.frame_data_len) <0) {
-                        error_code = FRAME_PARSER_USER_HAND_HEAD_ERROR;
+                case PACKET_RX_WAIT:
+                    break;
+                case PACKET_RX_FIND_HEAD:
+                    // ack
+                    // find head
+                    if((g_frame.head == SOH || g_frame.head == STX) && g_frame.index == 0)
+                    {
+                        // find file name
+                        if(ymodem_parser_head(g_frame.data,g_frame_state.frame_data_len) <0)
+                        {
+                            error_code = FRAME_PARSER_USER_HAND_HEAD_ERROR;
+                            goto error_exit;
+                        }
+                        if(g_ymodem.ymodem_rx_head_handle(g_modem_rx_packet.packet_file.name_data,g_modem_rx_packet.packet_file.name_data_size,g_modem_rx_packet.packet_file.file_size) !=0) {
+                            error_code = FRAME_PARSER_USER_HAND_HEAD_ERROR;
+                            goto error_exit;
+                        }
+                        g_modem_rx_packet.packet_state = PACKET_RX_FIND_DATA;
+                        g_write_C_disable = 0;
+                    }
+                    else
+                    {
+                        error_code = FRAME_PARSER_HEAD_NOT_HAND;
                         goto error_exit;
                     }
-                    if(g_ymodem.ymodem_rx_head_handle(g_modem_rx_packet.packet_file.name_data,g_modem_rx_packet.packet_file.name_data_size,g_modem_rx_packet.packet_file.file_size) !=0) {
-                        error_code = FRAME_PARSER_USER_HAND_HEAD_ERROR;
-                        goto error_exit;
-                    }
-                    g_modem_rx_packet.packet_state = PACKET_RX_FIND_DATA;
-                    g_write_C_disable = 0;
-
-                } else {
-
-                    error_code = FRAME_PARSER_HEAD_NOT_HAND;
-                    goto error_exit;
-                }
-                g_ymodem.ymodem_write_byte(ACK);
-                break;
+                    g_ymodem.ymodem_write_byte(ACK);
+                    // drv_com2_write(ACK);
+                    break;
             case PACKET_RX_FIND_DATA:
 
 
                 // 如果发送了EOT,代表数据传输完成
-                if(g_frame.head == EOT) {
+                if(g_frame.head == EOT)
+                {
                     // 先发送NAK
                     g_ymodem.ymodem_write_byte(NAK);
                     g_modem_rx_packet.packet_state = PACKET_RX_FIND_END;
                     // 数据可能用SOH 128或者STX 1024传输
-                } else if(g_frame.head ==SOH || g_frame.head==STX) {
+                }
+                else if(g_frame.head ==SOH || g_frame.head==STX)
+                {
                     g_ymodem.ymodem_write_byte(ACK);
+                    // drv_com2_write(ACK);
                     uint32_t offset =g_modem_rx_packet.packet_file.file_size - g_modem_rx_packet.packet_file.sent_rec_file_size;
                     uint32_t data_size = 0;
-                    if(g_frame.head ==SOH) {
+                    if(g_frame.head ==SOH)
+                    {
                         data_size = SOH_PACKET_SIZE;
-                    } else {
+                    }
+                    else
+                    {
                         data_size = STX_PACKET_SIZE;
                     }
-
-                    if(offset<data_size) {
+                    if(offset<data_size)
+                    {
                         g_modem_rx_packet.packet_file.sent_rec_file_size += offset;
                         g_modem_rx_packet.packet_file.percent = g_modem_rx_packet.packet_file.sent_rec_file_size*100/g_modem_rx_packet.packet_file.file_size;
                         g_ymodem.ymodem_rx_data_handle(g_frame.data,offset,g_modem_rx_packet.packet_file.sent_rec_file_size,g_modem_rx_packet.packet_file.percent);
-                    } else {
+                    }
+                    else
+                    {
                         g_modem_rx_packet.packet_file.sent_rec_file_size += data_size;
                         g_modem_rx_packet.packet_file.percent = g_modem_rx_packet.packet_file.sent_rec_file_size*100/g_modem_rx_packet.packet_file.file_size;
                         g_ymodem.ymodem_rx_data_handle(g_frame.data,data_size,g_modem_rx_packet.packet_file.sent_rec_file_size,g_modem_rx_packet.packet_file.percent);
                     }
-                } else {
+                }
+                else
+                {
                     error_code = FRAME_PARSER_DATA_REC_ERROR;
                     goto error_exit;
 
@@ -158,14 +170,15 @@ void ymodem_rx_handle(uint8_t *data,uint32_t rx_size)
 
                 break;
             case PACKET_RX_FIND_END:
+                // drv_com2_write(ACK);
                 g_ymodem.ymodem_write_byte(ACK);
                 // 如果是EOT,要发送"C"
                 if(g_frame.head == EOT) {
                     g_write_C_disable = 0;
                     //g_write_C_disable = 0;
                     // 如果发送了SOH,查看里面有没有文件,没有文件代表传输结束
-                } else if(g_frame.head == SOH) {
-
+                } else if(g_frame.head == SOH)
+                {
                     if(g_modem_rx_packet.packet_file.file_size == g_modem_rx_packet.packet_file.sent_rec_file_size) {
                         g_ymodem.ymodem_rx_finish_handle(PACKET_RX_FINISH_OK);
                     } else {
@@ -187,8 +200,6 @@ void ymodem_rx_handle(uint8_t *data,uint32_t rx_size)
             g_modem_rx_packet.last_packet_index = g_modem_rx_packet.now_packet_index;
         }
     }
-
-
     return;
 error_exit:
     ymodem_reset();
@@ -444,7 +455,8 @@ static uint32_t ymodem_tx_data_packet(uint8_t **p_source, uint8_t *p_packet, uin
     p_packet[i] = mcrc>>8;
     p_packet[i+1] = mcrc&0xff;
 
-    for(int i = 0; i<packet_size + 5; i++) {
+    for(int i = 0; i<packet_size + 5; i++)
+    {
         g_ymodem.ymodem_write_byte(p_packet[i]);
     }
     return packet_size;
@@ -622,7 +634,7 @@ static char ymodem_tx_packet(uint8_t data)
     default:
         break;
     }
-
+	return 0;
 }
 
 /******************************************************************************

@@ -1,7 +1,7 @@
 #ifndef __DEV_COMCTRL_H_
 #define __DEV_COMCTRL_H_
 
-#include "common.h"
+#include "main.h"
 
 
 // ·¢ËÍ»º³åÇø

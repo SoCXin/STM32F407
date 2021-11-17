@@ -1,24 +1,21 @@
-
-#include <stdio.h>
-#include <stdint.h>
-#include <stdarg.h>
 #include "main.h"
 #include "ymodem.h"
 #include "dev_com.h"
 #include "drv_com.h"
 #include "flash_if.h"
-
+#include <stdio.h>
+#include <stdint.h>
+#include <stdarg.h>
 
 
 #define USE_RX_MODE
-// #define USER_APP1_ADDRESS  (uint32_t)0x08004000
-
+#define KAPP_ADDR  (uint32_t)0x08004000
 
 #include <stdio.h>
 int fputc(int ch, FILE *f)
 {
-    LL_USART_TransmitData8(USART1,(uint8_t)ch);
-    while (LL_USART_IsActiveFlag_TXE(USART1)== RESET);
+		USART1->DR = (uint8_t)ch;
+		while((USART1->SR&0X40)==0);
     return ch;
 }
 
@@ -148,7 +145,6 @@ void g_ymodem_rx_finish_handle(int state)
         printf("\r\n--file end error :%d--\r\n",state);
     }
 }
-
 /******************************************************************************
 **函数信息 ：
 **功能描述 ：发送数据处理
@@ -157,6 +153,7 @@ void g_ymodem_rx_finish_handle(int state)
 *******************************************************************************/
 char name[] = "testupload.txt";
 char file[] = "asdjlfaj129384719823749817239847198273498sdflajsldfjalsdjflasa134917239419823749817298347918237haksjdhfkahsdfkjhaskdjfhkahsd123456789";
+//
 void g_ymodem_tx_data_handle(uint8_t **file_read_addr, uint32_t  file_read_size, uint32_t file_has_read_size,  uint32_t file_remain_size,uint8_t percent)
 {
     printf("read size:%d  has_read:%d  remain:%d  per:%d\r\n",file_read_size,file_has_read_size,  file_remain_size,percent);
@@ -172,18 +169,13 @@ void g_ymodem_tx_data_handle(uint8_t **file_read_addr, uint32_t  file_read_size,
 *******************************************************************************/
 void test(void)
 {
-    // iap_load_app(USER_APP1_ADDRESS);
 	LL_USART_EnableIT_RXNE(USART1);
 	LL_USART_EnableIT_PE(USART1);
 	LL_USART_EnableIT_RXNE(USART2);
 	LL_USART_EnableIT_PE(USART2);
 	LL_USART_EnableIT_RXNE(USART3);
 	LL_USART_EnableIT_PE(USART3);
-    // if(Mark_Get(bkp_app1))
-    // {
-    //     Mark_Set(bkp_app1, 0);
-    //     iap_load_app(USER_APP1_ADDRESS);
-    // }
+
 	dev_comctrl_init();
 	dev_comctrl_regist_rx_callback(g_com_rx_callBack);
 
@@ -195,7 +187,7 @@ void test(void)
 	ymodem.ymodem_rx_finish_handle = g_ymodem_rx_finish_handle;
 	ymodem.ymodem_tx_data_handle = g_ymodem_tx_data_handle;
 	ymodem_init(&ymodem);
-	printf("qitas test boot\r\n");
+	printf("qitas test IAP\r\n");
 	FLASH_If_Init();
 	ymodem_tx_init(name,sizeof(name),sizeof(file)-1);
     while (1)

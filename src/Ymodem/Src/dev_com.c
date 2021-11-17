@@ -26,13 +26,12 @@ static void dev_comctrl_buff_init(void)
 **输入参数 ：无
 **输出参数 ：无
 *******************************************************************************/
-
-static void dev_comctrl_interrput_rx_handle(uint8_t data){
+static void dev_comctrl_interrput_rx_handle(uint8_t data)
+{
 	// 接收缓冲区添加数据
 	m_com_buf.Rx_part[m_com_buf.Rx_write++] = data;
 	// 如果达到末尾,写指针归零
-	if(m_com_buf.Rx_write >= RX_BUFF_SIZE)
-		m_com_buf.Rx_write = 0;
+	if(m_com_buf.Rx_write >= RX_BUFF_SIZE) m_com_buf.Rx_write = 0;
 }
 
 /******************************************************************************

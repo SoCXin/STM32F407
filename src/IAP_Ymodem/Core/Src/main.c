@@ -25,12 +25,6 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "stmflash.h"
-#include "kymodem.h"
-#include "dev_com.h"
-#include "drv_com.h"
-#include "bootloader.h"
-#include "flash_if.h"
 extern void test(void);
 /* USER CODE END Includes */
 

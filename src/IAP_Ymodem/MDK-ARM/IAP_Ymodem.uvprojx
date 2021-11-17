@@ -1479,14 +1479,14 @@
               <FilePath>..\..\Ymodem\Src\flash_if.c</FilePath>
             </File>
             <File>
-              <FileName>kymodem.c</FileName>
+              <FileName>test.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Ymodem\Src\kymodem.c</FilePath>
+              <FilePath>..\..\Ymodem\test.c</FilePath>
             </File>
             <File>
-              <FileName>stmflash.c</FileName>
+              <FileName>ymodem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Ymodem\Src\stmflash.c</FilePath>
+              <FilePath>..\..\Ymodem\Src\ymodem.c</FilePath>
             </File>
             <File>
               <FileName>bootloader.c</FileName>

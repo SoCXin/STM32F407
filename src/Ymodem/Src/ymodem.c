@@ -83,7 +83,7 @@ void ymodem_rx_handle(uint8_t *data,uint32_t rx_size)
                         error_code = FRAME_PARSER_HEAD_NOT_HAND;
                         goto error_exit;
                     }
-                    g_ymodem.ymodem_write_byte(ACK);
+                    g_ymodem.ymodem_tx_byte(ACK);
                     // drv_com2_write(ACK);
                     break;
             case PACKET_RX_FIND_DATA:
@@ -91,13 +91,13 @@ void ymodem_rx_handle(uint8_t *data,uint32_t rx_size)
                 if(g_frame.head == EOT)
                 {
                     // 先发送NAK
-                    g_ymodem.ymodem_write_byte(NAK);
+                    g_ymodem.ymodem_tx_byte(NAK);
                     g_modem_rx_packet.packet_state = PACKET_RX_FIND_END;
                     // 数据可能用SOH 128或者STX 1024传输
                 }
                 else if(g_frame.head ==SOH || g_frame.head==STX)
                 {
-                    g_ymodem.ymodem_write_byte(ACK);
+                    g_ymodem.ymodem_tx_byte(ACK);
                     // drv_com2_write(ACK);
                     uint32_t offset =g_modem_rx_packet.packet_file.file_size - g_modem_rx_packet.packet_file.sent_rec_file_size;
                     uint32_t data_size = 0;
@@ -132,7 +132,7 @@ void ymodem_rx_handle(uint8_t *data,uint32_t rx_size)
                 break;
             case PACKET_RX_FIND_END:
                 // drv_com2_write(ACK);
-                g_ymodem.ymodem_write_byte(ACK);
+                g_ymodem.ymodem_tx_byte(ACK);
                 // 如果是EOT,要发送"C"
                 if(g_frame.head == EOT) {
                     g_write_C_disable = 0;
@@ -185,7 +185,7 @@ void ymodem_rx_time_handle(void)
         i = 0;
         if(g_write_C_disable==0)
         {
-            g_ymodem.ymodem_write_byte(CNC);
+            g_ymodem.ymodem_tx_byte(CNC);
         }
     }
 }
@@ -441,7 +441,7 @@ static uint32_t ymodem_tx_data_packet(uint8_t **p_source, uint8_t *p_packet, uin
 
     for(int i = 0; i<packet_size + 5; i++)
     {
-        g_ymodem.ymodem_write_byte(p_packet[i]);
+        g_ymodem.ymodem_tx_byte(p_packet[i]);
     }
     return packet_size;
 }
@@ -516,7 +516,7 @@ void ymodem_tx_head_packet(uint8_t *p_data, const uint8_t *p_file_name,uint32_t 
     p_data[j] = mcrc>>8;
     p_data[j+1] = mcrc;
     for(int i = 0; i< packet_size + 5; i++) {
-        g_ymodem.ymodem_write_byte(p_data[i]);
+        g_ymodem.ymodem_tx_byte(p_data[i]);
     }
 }
 
@@ -535,7 +535,7 @@ static void ymodem_tx_end_packet(uint8_t *p_data)
         p_data[i + 3] = 0;
     }
     for(int i = 0; i< PACKET_SIZE + 5; i++) {
-        g_ymodem.ymodem_write_byte(p_data[i]);
+        g_ymodem.ymodem_tx_byte(p_data[i]);
     }
 }
 
@@ -590,14 +590,14 @@ static char ymodem_tx_packet(uint8_t data)
     case PACKET_TX_WAIT_END_DATA_ACK:
         if(data == ACK) {
             g_modem_tx_packet.packet_state=PACKET_TX_WAIT_FIRST_EOT_ACK_NCK;
-            g_ymodem.ymodem_write_byte(EOT);
+            g_ymodem.ymodem_tx_byte(EOT);
             return 0;
         }
 
         break;
     case PACKET_TX_WAIT_FIRST_EOT_ACK_NCK:
         if(data == NAK) {
-            g_ymodem.ymodem_write_byte(EOT);
+            g_ymodem.ymodem_tx_byte(EOT);
             g_modem_tx_packet.packet_state = PACKET_TX_WAIT_EOT_WAIT_ACK;
         } else if(data == ACK) {
             g_modem_tx_packet.packet_state = PACKET_TX_WAIT_END_C;

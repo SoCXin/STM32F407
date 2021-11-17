@@ -64,16 +64,16 @@ uint32_t FLASH_Write(uint32_t FlashAddress, uint32_t* Data ,uint32_t DataLength)
 static uint32_t app_addr = KAPP_ADDR;
 void g_ymodem_rx_data_handle(char *data, uint16_t len,uint32_t download_byte,uint8_t percent)
 {
-	printf("data:%d %d [%d]\r\n",len,download_byte,percent);
-	if (FLASH_Write(app_addr,(uint32_t*) data,len/4) == FLASHIF_OK)
-	{
-		app_addr += len;
+    printf("data:%d %d [%d]\r\n",len,download_byte,percent);
+    if (FLASH_Write(app_addr,(uint32_t*) data,len/4) == FLASHIF_OK)
+    {
+        app_addr += len;
         printf("data write ok\r\n");
-	}
+    }
     else
     {
-		printf("data write error\r\n");
-	}
+        printf("data write error\r\n");
+    }
 }
 /******************************************************************************
 **函数信息 ：
@@ -248,10 +248,11 @@ void test(void)
 	LL_USART_EnableIT_PE(USART3);
 
 	Ymodem_TypeDef ymodem;
-	ymodem.ymodem_write_byte = drv_com2_write;
-	ymodem.ymodem_rx_error_handle = g_ymodem_rx_error_handle;
+//    ymodem.ymodem_rx_interrupt=
+	ymodem.ymodem_tx_byte = drv_com2_write;
 	ymodem.ymodem_rx_head_handle = g_ymodem_rx_head_handle;
 	ymodem.ymodem_rx_data_handle = g_ymodem_rx_data_handle;
+    ymodem.ymodem_rx_error_handle = g_ymodem_rx_error_handle;
 	ymodem.ymodem_rx_finish_handle = g_ymodem_iap_done_handle;
 	ymodem.ymodem_tx_data_handle = g_ymodem_tx_data_handle;
     dev_comctrl_regist_rx_callback(g_com_rx_callBack);

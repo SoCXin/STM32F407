@@ -27,7 +27,6 @@ extern void dev_comctrl_regist_rx_callback(void (*arg_callBack)(unsigned char* d
 extern void (*drv_com1_handle)(unsigned char data);
 extern void (*drv_com2_handle)(unsigned char data);
 extern void (*drv_com3_handle)(unsigned char data);
-extern void sys_com_regist_reccallback(uint32_t USARTx,void (*drv_com_m_handle)(unsigned char data));
 
 void drv_com1_write(char data);
 void drv_com2_write(char data);

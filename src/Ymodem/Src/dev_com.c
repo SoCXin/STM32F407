@@ -14,20 +14,6 @@ void (*m_com_rev_callBack)(unsigned char* data,uint32_t size) = 0;
 **输入参数 ：无
 **输出参数 ：无
 *******************************************************************************/
-static void dev_comctrl_interrput_rx_handle(uint8_t data)
-{
-	// 接收缓冲区添加数据
-	m_com_buf.Rx_part[m_com_buf.Rx_write++] = data;
-	// 如果达到末尾,写指针归零
-	if(m_com_buf.Rx_write >= RX_BUFF_SIZE) m_com_buf.Rx_write = 0;
-}
-
-/******************************************************************************
-**函数信息 ：
-**功能描述 ：
-**输入参数 ：无
-**输出参数 ：无
-*******************************************************************************/
 static void dev_comctrl_rx_handle(void)
 {
     int offset_dir;
@@ -66,18 +52,7 @@ void dev_comctrl_handle(void)
     dev_comctrl_tx_handle();
     dev_comctrl_rx_handle();
 }
-/******************************************************************************
-**函数信息 ：
-**功能描述 ：
-**输入参数 ：无
-**输出参数 ：无
-*******************************************************************************/
-void dev_comctrl_init(void)
-{
-    memset(&m_com_buf,0,sizeof(Com_paser_BuffTypedef));
-	driver_com_regist_reccallback(2,dev_comctrl_interrput_rx_handle);
-	//drv_com_printf(com1,"this is from com1");
-}
+
 
 /******************************************************************************
 **函数信息 ：
@@ -85,10 +60,6 @@ void dev_comctrl_init(void)
 **输入参数 ：无
 **输出参数 ：无
 *******************************************************************************/
-void dev_comctrl_regist_rx_callback(void (*arg_callBack)(unsigned char* data,uint32_t size))
-{
-	m_com_rev_callBack = arg_callBack;
-}
 
 
 void drv_com1_write(char data)
@@ -123,9 +94,56 @@ void (*drv_com1_handle)(unsigned char data);
 void (*drv_com2_handle)(unsigned char data);
 void (*drv_com3_handle)(unsigned char data);
 
-void sys_com_regist_reccallback(uint32_t USARTx,void (*drv_com_m_handle)(unsigned char data))
+/******************************************************************************
+**函数信息 ：
+**功能描述 ：
+**输入参数 ：无
+**输出参数 ：无
+*******************************************************************************/
+static void dev_comctrl_interrput_rx_handle(uint8_t data)
 {
-	switch(USARTx)
+    // 接收缓冲区添加数据
+    m_com_buf.Rx_part[m_com_buf.Rx_write++] = data;
+    // 如果达到末尾,写指针归零
+    if(m_com_buf.Rx_write >= RX_BUFF_SIZE) m_com_buf.Rx_write = 0;
+    // if(LL_USART_IsActiveFlag_RXNE(USART1))
+	// {
+    //     if(ReceiveCounter>=MODBUS_RECEIVE_BUFFER_SIZE) ReceiveCounter=0;
+    //     ReceiveBuffer[ReceiveCounter++] = USART1->RDR;
+    //     ModbusTimerValue=0;
+	// }
+}
+/******************************************************************************
+**函数信息 ：
+**功能描述 ：
+**输入参数 ：无
+**输出参数 ：无
+*******************************************************************************/
+void dev_comctrl_init(void)
+{
+    memset(&m_com_buf,0,sizeof(Com_paser_BuffTypedef));
+	driver_com_regist_reccallback(2,dev_comctrl_interrput_rx_handle);
+	//drv_com_printf(com1,"this is from com1");
+}
+// void sys_com_regist_reccallback(uint32_t USARTx,void (*drv_com_m_handle)(unsigned char data))
+// {
+// 	switch(USARTx)
+// 	{
+// 		case 1:
+// 			drv_com1_handle = drv_com_m_handle;
+// 			break;
+// 		case 2:
+// 			drv_com2_handle = drv_com_m_handle;
+// 			break;
+// 		case 3:
+// 			drv_com3_handle = drv_com_m_handle;
+// 			break;
+// 	}
+// }
+
+void driver_com_regist_reccallback(uint32_t USARTx,void (*drv_com_m_handle)(unsigned char data))
+{
+    switch(USARTx)
 	{
 		case 1:
 			drv_com1_handle = drv_com_m_handle;
@@ -137,9 +155,10 @@ void sys_com_regist_reccallback(uint32_t USARTx,void (*drv_com_m_handle)(unsigne
 			drv_com3_handle = drv_com_m_handle;
 			break;
 	}
+	// sys_com_regist_reccallback(USARTx,drv_com_m_handle);
 }
 
-void driver_com_regist_reccallback(uint32_t USARTx,void (*drv_com_m_handle)(unsigned char data))
+void dev_comctrl_regist_rx_callback(void (*arg_callBack)(unsigned char* data,uint32_t size))
 {
-	sys_com_regist_reccallback(USARTx,drv_com_m_handle);
+	m_com_rev_callBack = arg_callBack;
 }

@@ -83,7 +83,7 @@ void ymodem_rx_handle(uint8_t *data,uint32_t rx_size)
         //解析数据包成功
         if(parser_frame(data[i]))
         {
-            printf("jiexi:%d\r\n",g_frame.head);
+            // printf("jiexi:%d\r\n",g_frame.head);
             g_modem_rx_packet.now_packet_index = g_frame.index;
             // 如果重复的index,就是上位机中止了
             if(g_modem_rx_packet.now_packet_index == g_modem_rx_packet.last_packet_index && g_modem_rx_packet.last_packet_index!=0 && g_frame.head!=EOT)
@@ -213,14 +213,15 @@ error_exit:
 }
 
 
-int i = 0;
+static int i = 0;
 // 接受时间处理
 void ymodem_rx_time_handle(void)
 {
     if(i++ <1000000) {
     } else {
         i = 0;
-        if(g_write_C_disable==0) {
+        if(g_write_C_disable==0)
+				{
             g_ymodem.ymodem_write_byte(CNC);
         }
     }

@@ -99,7 +99,7 @@ void dev_comctrl_init(void)
 *******************************************************************************/
 void dev_comctrl_handle(void)
 {
-    dev_comctrl_tx_handle();
+//    dev_comctrl_tx_handle();
     dev_comctrl_rx_handle();
 }
 /******************************************************************************

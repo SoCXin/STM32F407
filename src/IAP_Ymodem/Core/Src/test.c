@@ -8,7 +8,7 @@
 #include "common.h"
 
 #define USE_RX_MODE
-#define KAPP_ADDR  (uint32_t)0x08004000
+#define KAPP_ADDR  (uint32_t)0x08008000
 
 #include <stdio.h>
 int fputc(int ch, FILE *f)
@@ -120,14 +120,11 @@ void g_ymodem_tx_data_handle(uint8_t **file_read_addr, uint32_t  file_read_size,
 **输入参数 ：无
 **输出参数 ：无
 *******************************************************************************/
-void test(void)
+// void test(void)
+#include "cmsis_os.h"
+void StartTaskIAP(void *argument)
 {
-	LL_USART_EnableIT_RXNE(USART1);
-	LL_USART_EnableIT_PE(USART1);
-	LL_USART_EnableIT_RXNE(USART2);
-	LL_USART_EnableIT_PE(USART2);
-	LL_USART_EnableIT_RXNE(USART3);
-	LL_USART_EnableIT_PE(USART3);
+
 
 	dev_comctrl_init();
 	dev_comctrl_regist_rx_callback(g_com_rx_callBack);
@@ -149,5 +146,6 @@ void test(void)
         #ifdef USE_RX_MODE
         ymodem_rx_time_handle();
         #endif
+//        osDelay(1);
     }
 }

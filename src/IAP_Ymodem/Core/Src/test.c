@@ -58,7 +58,7 @@ void g_ymodem_rx_data_handle(char *data, uint16_t len,uint32_t download_byte,uin
 	if (FLASH_If_Write(app_addr,(uint32_t*) data,len/4) == FLASHIF_OK)
 	{
 		app_addr += len;
-        // printf("data write ok\r\n");
+        printf("data write ok\r\n");
 	}
     else
     {
@@ -75,7 +75,7 @@ char g_ymodem_rx_head_handle(char *file_name,uint16_t file_name_len, uint32_t fi
 {
     app_addr = KAPP_ADDR;
     printf("\r\nfile:%s %d\r\n",file_name,file_len);
-    // FLASH_If_Erase(KAPP_ADDR);
+    FLASH_If_Erase(KAPP_ADDR);
     return 0;
 }
 

@@ -9,6 +9,7 @@
 
 #define USE_RX_MODE
 #define KAPP_ADDR  (uint32_t)0x08004000
+// __IO uint32_t g_JumpInit __attribute__((at(0x20001000), zero_init));
 
 #include <stdio.h>
 int fputc(int ch, FILE *f)
@@ -20,20 +21,7 @@ int fputc(int ch, FILE *f)
 
 
 
-/******************************************************************************
-**函数信息 ：
-**功能描述 ：串口接受回调
-**输入参数 ：无
-**输出参数 ：无
-*******************************************************************************/
-void g_com_rx_callBack(unsigned char* data,uint32_t size)
-{
-	#ifdef USE_RX_MODE
-	ymodem_rx_handle(data,size);
-	#else
-	ymodem_tx_handle(data,size);
-	#endif
-}
+
 /******************************************************************************
 **函数信息 ：
 **功能描述 ：串口错误回调
@@ -74,7 +62,7 @@ void g_ymodem_rx_data_handle(char *data, uint16_t len,uint32_t download_byte,uin
 char g_ymodem_rx_head_handle(char *file_name,uint16_t file_name_len, uint32_t file_len)
 {
     app_addr = KAPP_ADDR;
-    printf("\r\nfile:%s %d\r\n",file_name,file_len);
+    printf("\r\nfile[%d]:%s\r\n",file_len,file_name);
     // FLASH_If_Erase(KAPP_ADDR);
     return 0;
 }
@@ -129,8 +117,6 @@ void test(void)
 	LL_USART_EnableIT_RXNE(USART3);
 	LL_USART_EnableIT_PE(USART3);
 
-	dev_comctrl_init();
-	dev_comctrl_regist_rx_callback(g_com_rx_callBack);
 
 	Ymodem_TypeDef ymodem;
 	ymodem.ymodem_write_byte = drv_com2_write;
@@ -139,8 +125,9 @@ void test(void)
 	ymodem.ymodem_rx_data_handle = g_ymodem_rx_data_handle;
 	ymodem.ymodem_rx_finish_handle = g_ymodem_rx_finish_handle;
 	ymodem.ymodem_tx_data_handle = g_ymodem_tx_data_handle;
+
 	ymodem_init(&ymodem);
-	printf("qitas test IAP\r\n");
+	printf("qitas IAP\r\n");
 	FLASH_If_Init();
 	ymodem_tx_init(name,sizeof(name),sizeof(file)-1);
     while (1)

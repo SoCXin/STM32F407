@@ -15,7 +15,6 @@ static uint8_t g_tx_buff[2048];
 static void Int2Str(uint8_t *p_str, uint32_t intnum);
 static unsigned long str_to_u32(char* str);
 static unsigned short crc16(const unsigned char *buf, unsigned long count);
-static void crc16_reset(void);
 static void crc16_sum(uint8_t data);
 static char ymodem_parser_head(uint8_t  *buf, uint32_t sz ) ;
 static void parser_frame_reset(void);
@@ -112,7 +111,8 @@ void ymodem_rx_handle(uint8_t *data,uint32_t rx_size)
                             error_code = FRAME_PARSER_USER_HAND_HEAD_ERROR;
                             goto error_exit;
                         }
-                        if(g_ymodem.ymodem_rx_head_handle(g_modem_rx_packet.packet_file.name_data,g_modem_rx_packet.packet_file.name_data_size,g_modem_rx_packet.packet_file.file_size) !=0) {
+                        if(g_ymodem.ymodem_rx_head_handle(g_modem_rx_packet.packet_file.name_data,g_modem_rx_packet.packet_file.name_data_size,g_modem_rx_packet.packet_file.file_size) !=0)
+                        {
                             error_code = FRAME_PARSER_USER_HAND_HEAD_ERROR;
                             goto error_exit;
                         }
@@ -206,24 +206,36 @@ void ymodem_rx_handle(uint8_t *data,uint32_t rx_size)
     }
     return;
 error_exit:
+    // g_write_C_disable=0;
     ymodem_reset();
-    //g_write_C_disable=0;
     g_modem_rx_packet.packet_state = PACKET_RX_WAIT;
     g_ymodem.ymodem_rx_error_handle(error_code);
 }
 
 
-int i = 0;
+static uint32_t timeout = 0;
 // 接受时间处理
 void ymodem_rx_time_handle(void)
 {
-    if(i++ <1000000) {
-    } else {
-        i = 0;
-        if(g_write_C_disable==0) {
+    if((timeout++)>1000000)
+    {
+        timeout = 0;
+        if(g_write_C_disable==0)
+        {
             g_ymodem.ymodem_write_byte(CNC);
         }
     }
+}
+
+/******************************************************************************
+**函数信息 ：
+**功能描述 ：串口接受回调
+**输入参数 ：无
+**输出参数 ：无
+*******************************************************************************/
+void g_com_rx_callBack(unsigned char* data,uint32_t size)
+{
+	ymodem_rx_handle(data,size);
 }
 
 
@@ -290,7 +302,6 @@ static unsigned short crc16(const unsigned char *buf, unsigned long count)
     return crc;
 }
 
-// crc reset
 static void crc16_reset(void)
 {
     g_frame_state.frame_crc=0;
@@ -328,7 +339,12 @@ static char ymodem_parser_head(uint8_t  *buf, uint32_t sz ) //解析出头包中
     }
     return 0;
 }
-
+/******************************************************************************
+**函数信息 ：
+**功能描述 ：
+**输入参数 ：无
+**输出参数 ：无
+*******************************************************************************/
 
 // 解析器初始化
 static void parser_frame_reset(void)
@@ -337,7 +353,12 @@ static void parser_frame_reset(void)
     g_frame_state.frame_data_now_index = 0;
 }
 
-
+/******************************************************************************
+**函数信息 ：
+**功能描述 ：
+**输入参数 ：无
+**输出参数 ：无
+*******************************************************************************/
 // 解析数据帧
 static char parser_frame(uint8_t data)
 {
@@ -386,15 +407,18 @@ static char parser_frame(uint8_t data)
         break;
     case FRAME_FIND_CRC:
         g_frame.crc_L = data;
+        // g_frame_state.frame_crc=0;
         // reset crc
         crc16_reset();
         // calc crc
-        for(int i = 0; i<g_frame_state.frame_data_len; i++) {
+        for(int i = 0; i<g_frame_state.frame_data_len; i++)
+        {
             crc16_sum(g_frame.data[i]);
         }
         // frame reset
         parser_frame_reset();
-        if(((g_frame.crc_H<<8)+g_frame.crc_L) == g_frame_state.frame_crc) {
+        if(((g_frame.crc_H<<8)+g_frame.crc_L) == g_frame_state.frame_crc)
+        {
             return FRAME_PARSER_OK;
         }
         return FRAME_PARSER_CRC_ERROR;
@@ -476,9 +500,11 @@ static uint32_t ymodem_tx_data_packet(uint8_t **p_source, uint8_t *p_packet, uin
 void ymodem_init(Ymodem_TypeDef *ymodem)
 {
     g_ymodem = *ymodem;
+    dev_comctrl_init();
+    dev_comctrl_regist_rx_callback(g_com_rx_callBack);
+    // dev_comctrl_init();
+    // FLASH_If_Init();
 }
-// 复位
-
 /******************************************************************************
 **函数信息 ：
 **功能描述 ：

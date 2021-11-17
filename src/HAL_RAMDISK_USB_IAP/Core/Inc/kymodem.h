@@ -129,7 +129,7 @@ typedef enum {
 
 
 
-typedef struct Ymodem_TypeDef_TAG
+typedef struct
 {
 	void (*ymodem_rx_error_handle)(int error_code);
 	char (*ymodem_rx_head_handle)(char *file_name,uint16_t file_name_len, uint32_t file_len);

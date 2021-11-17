@@ -85,12 +85,29 @@ static void dev_comctrl_tx_handle(void)
 **输入参数 ：无
 **输出参数 ：无
 *******************************************************************************/
+void dev_comctrl_regist_rx_callback(void (*arg_callBack)(unsigned char* data,uint32_t size))
+{
+	m_com_rev_callBack = arg_callBack;
+}
+
+/******************************************************************************
+**函数信息 ：
+**功能描述 ：
+**输入参数 ：无
+**输出参数 ：无
+*******************************************************************************/
 void dev_comctrl_init(void)
 {
 	dev_comctrl_buff_init();
-	driver_com_regist_reccallback(2,dev_comctrl_interrput_rx_handle);
+    sys_com_regist_reccallback(2,dev_comctrl_interrput_rx_handle);
+	// driver_com_regist_reccallback(2,dev_comctrl_interrput_rx_handle);
+
 	//drv_com_printf(com1,"this is from com1");
 }
+// void driver_com_regist_reccallback(uint32_t USARTx,void (*drv_com_m_handle)(unsigned char data))
+// {
+
+// }
 /******************************************************************************
 **函数信息 ：
 **功能描述 ：
@@ -101,14 +118,4 @@ void dev_comctrl_handle(void)
 {
     dev_comctrl_tx_handle();
     dev_comctrl_rx_handle();
-}
-/******************************************************************************
-**函数信息 ：
-**功能描述 ：
-**输入参数 ：无
-**输出参数 ：无
-*******************************************************************************/
-void dev_comctrl_regist_rx_callback(void (*arg_callBack)(unsigned char* data,uint32_t size))
-{
-	m_com_rev_callBack = arg_callBack;
 }

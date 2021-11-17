@@ -10,13 +10,13 @@
 #include <stdlib.h>
 
 #define YMODEM_MALLOC  malloc
-#define YMODEM_FREE    free   
+#define YMODEM_FREE    free
 /*********************************************************************
  * CONSTANTS
  */
 #define YMODEM_DATA_SIZE_128    128
 #define YMODEM_DATA_SIZE_1024   1024
-   
+
 #define YMODEM_RX_IDLE          0
 #define YMODEM_RX_ACK           1
 #define YMODEM_RX_EOT           2
@@ -62,66 +62,67 @@ static  uint8_t ym_cyc;   //发送时的轮转变量
 void ymodem_init(Ymodem_TypeDef *ymodem)
 {
 	g_ymodem = *ymodem;
+
 }
 
 
 //核心函数
-unsigned short crc16(const unsigned char *buf, unsigned long count)  
-{  
-  unsigned short crc = 0;  
-  int i;  
+unsigned short crc16(const unsigned char *buf, unsigned long count)
+{
+  unsigned short crc = 0;
+  int i;
 
-  while(count--) {  
-    crc = crc ^ *buf++ << 8;  
+  while(count--) {
+    crc = crc ^ *buf++ << 8;
 
-    for (i=0; i<8; i++) {  
-      if (crc & 0x8000) {  
-        crc = crc << 1 ^ 0x1021;  
-      } else {  
-        crc = crc << 1;  
-      }  
-    }  
-  }  
-  return crc;  
-}  
-  
-static const char *u32_to_str(unsigned int val)  
-{  
-  /* Maximum number of decimal digits in u32 is 10 */  
-  static char num_str[11];  
-  int  pos = 10;  
-  num_str[10] = 0;  
+    for (i=0; i<8; i++) {
+      if (crc & 0x8000) {
+        crc = crc << 1 ^ 0x1021;
+      } else {
+        crc = crc << 1;
+      }
+    }
+  }
+  return crc;
+}
 
-  if (val == 0) {  
-    /* If already zero then just return zero */  
-    return "0";  
-  }  
+static const char *u32_to_str(unsigned int val)
+{
+  /* Maximum number of decimal digits in u32 is 10 */
+  static char num_str[11];
+  int  pos = 10;
+  num_str[10] = 0;
 
-  while ((val != 0) && (pos > 0)) {  
-    num_str[--pos] = (val % 10) + '0';  
-    val /= 10;  
-  }  
+  if (val == 0) {
+    /* If already zero then just return zero */
+    return "0";
+  }
 
-  return &num_str[pos];  
-}  
-  
-static unsigned long str_to_u32(char* str)  
-{  
-  const char *s = str;  
-  unsigned long acc;  
-  int c;  
+  while ((val != 0) && (pos > 0)) {
+    num_str[--pos] = (val % 10) + '0';
+    val /= 10;
+  }
 
-  /* strip leading spaces if any */  
-  do {  
-    c = *s++;  
-  } while (c == ' ');  
+  return &num_str[pos];
+}
 
-  for (acc = 0; (c >= '0') && (c <= '9'); c = *s++) {  
-    c -= '0';  
-    acc *= 10;  
-    acc += c;  
-  }  
-  return acc;  
+static unsigned long str_to_u32(char* str)
+{
+  const char *s = str;
+  unsigned long acc;
+  int c;
+
+  /* strip leading spaces if any */
+  do {
+    c = *s++;
+  } while (c == ' ');
+
+  for (acc = 0; (c >= '0') && (c <= '9'); c = *s++) {
+    c -= '0';
+    acc *= 10;
+    acc += c;
+  }
+  return acc;
 }
 //返回包的类型
 uint8_t ymodem_rx_pac_check( char* buf, size_t sz )
@@ -148,7 +149,7 @@ uint8_t ymodem_rx_pac_check( char* buf, size_t sz )
     {
     uint16_t crc1 = crc16( (uint8_t*)(buf+PACKET_HEADER), sz-PACKET_OVERHEAD );
     uint16_t crc2 = ((uint16_t)(buf[sz-2]))*256+buf[sz-1];
-    if( crc1 == crc2 && 0xff == (uint8_t)buf[1]+(uint8_t)buf[2] ) 
+    if( crc1 == crc2 && 0xff == (uint8_t)buf[1]+(uint8_t)buf[2] )
       return ch;
     else
       return 0xff;      //数据包校验为错
@@ -182,12 +183,12 @@ uint8_t ymodem_rx_prepare( char *buf, size_t sz ) //解析出头包中的文件�
 /*********************************************************************
  * @fn      ymodem_tx_put : Ymodem接收时，逻辑轮转调用函数
  * @param   buf : 数据缓冲区 buf : 数据大小
- */ 
+ */
 void ymodem_rx_put( char *buf, size_t rx_sz )
 {
   if( 0 == rx_sz )      //超时，从而得到的长度为0，则尝试发送“C”，并返回
   {g_ymodem.ymodem_write_char( 'C' );return;}
-    
+
   switch( ym_rx_status )
   {
   case YMODEM_RX_IDLE:
@@ -206,7 +207,7 @@ void ymodem_rx_put( char *buf, size_t rx_sz )
       {
         if( pac_size==128 && YMODEM_OK == ymodem_rx_prepare( buf+PACKET_HEADER, pac_size ) )
         {
-					
+
           g_ymodem.ymodem_write_char( ACK );
           seek = 0;      //初始化变量，用于接收新文件
           g_ymodem.ymodem_write_char( 'C' );
@@ -285,7 +286,7 @@ uint8_t ymodem_tx_make_pac_data( char *pbuf, size_t pac_sz )
 {
   uint8_t ans = YMODEM_ERR;
   uint16_t crc;
-  
+
   pbuf[0] = pac_sz==128? SOH:STX;
   pbuf[1] = ym_cyc;
   pbuf[2] = ~ym_cyc;
@@ -317,7 +318,7 @@ uint8_t ymodem_tx_make_pac_header( char *pbuf, char *fil_nm, size_t fil_sz )
  * 1.发送 [包  头] 状态：如果没有文件名，则发送空包，否则发送封装的头包
  * 2.发送 [数据包] 状态：发送数据包，出现问题或结束，则进入结束状态
  * 3.发送 [结  束] 状态：处理发送完成的相关事情
- */ 
+ */
 void ymodem_tx_put( char *buf, size_t rx_sz )
 {
   char *fil_nm=NULL;

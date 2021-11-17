@@ -175,10 +175,13 @@ int i = 0;
 // 接受时间处理
 void ymodem_rx_time_handle(void)
 {
-    if(i++ <1000000) {
-    } else {
+    if(i++ <1000000)
+    {
+    }
+    else {
         i = 0;
-        if(g_write_C_disable==0) {
+        if(g_write_C_disable==0)
+        {
             drv_com1_write(CNC);
         }
     }

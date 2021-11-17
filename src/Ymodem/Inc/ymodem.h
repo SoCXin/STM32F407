@@ -2,6 +2,7 @@
 #define __KYMODEM_H
 
 #include "main.h"
+#include "dev_com.h"
 
 #define SOH (0x01)      /* start of 128-byte data packet */
 #define STX (0x02)      /* start of 1024-byte data packet */
@@ -159,9 +160,10 @@ typedef struct
 
 extern Ymodem_TypeDef g_ymodem;
 
+void ymodem_timer_interrupt(void);
 void ymodem_init(Ymodem_TypeDef *ymodem);
 void ymodem_rx_handle(uint8_t *data,uint32_t len);
-void ymodem_rx_time_handle(void);
+void ymodem_loop(void);
 
 
 void ymodem_tx_init(char *file_name,char file_name_len,uint32_t file_size);

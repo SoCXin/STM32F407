@@ -1,7 +1,6 @@
 #include <string.h>
 #include <stdio.h>
 #include "ymodem.h"
-#include "dev_com.h"
 #include "usart.h"
 
 Ymodem_TypeDef g_ymodem;
@@ -177,18 +176,12 @@ error_exit:
 **输入参数 ：无
 **输出参数 ：无
 *******************************************************************************/
-int i = 0;
-void ymodem_rx_time_handle(void)
+static uint32_t YmodemTimerValue;
+void ymodem_timer_interrupt(void)
 {
-    if(i++ <1000000) {
-    } else {
-        i = 0;
-        if(g_write_C_disable==0)
-        {
-            g_ymodem.ymodem_tx_byte(CNC);
-        }
-    }
+    YmodemTimerValue++;
 }
+
 
 /******************************************************************************
 **函数信息 ：
@@ -196,8 +189,6 @@ void ymodem_rx_time_handle(void)
 **输入参数 ：无
 **输出参数 ：无
 *******************************************************************************/
-
-// int转字符串
 static void Int2Str(uint8_t *p_str, uint32_t intnum)
 {
     uint32_t i, divider = 1000000000, pos = 0, status = 0;
@@ -446,7 +437,32 @@ static uint32_t ymodem_tx_data_packet(uint8_t **p_source, uint8_t *p_packet, uin
     return packet_size;
 }
 
+/******************************************************************************
+**函数信息 ：
+**功能描述 ：
+**输入参数 ：无
+**输出参数 ：无
+*******************************************************************************/
+void ymodem_tx_init(char *file_name,char file_name_len,uint32_t file_size)
+{
+	memcpy(g_modem_tx_packet.packet_file.name_data,file_name,file_name_len);
+	g_modem_tx_packet.packet_file.name_data_size = file_name_len;
+	g_modem_tx_packet.packet_file.file_size = file_size;
+}
 
+/******************************************************************************
+**函数信息 ：
+**功能描述 ：
+**输入参数 ：无
+**输出参数 ：无
+*******************************************************************************/
+void ymodem_tx_handle(uint8_t  *buf, uint32_t sz)
+{
+    for(int i = 0; i<sz; i++)
+    {
+        ymodem_tx_packet(buf[i]);
+    }
+}
 
 
 /******************************************************************************
@@ -458,9 +474,9 @@ static uint32_t ymodem_tx_data_packet(uint8_t **p_source, uint8_t *p_packet, uin
 void ymodem_init(Ymodem_TypeDef *ymodem)
 {
     dev_comctrl_init();
+    // ymodem_tx_init(name,sizeof(name),sizeof(file)-1);
     g_ymodem = *ymodem;
 }
-// 复位
 
 /******************************************************************************
 **函数信息 ：
@@ -468,13 +484,54 @@ void ymodem_init(Ymodem_TypeDef *ymodem)
 **输入参数 ：无
 **输出参数 ：无
 *******************************************************************************/
-void ymodem_tx_init(char *file_name,char file_name_len,uint32_t file_size)
+void dev_comctrl_rx_handle(void)
 {
-		// cpy file name
-	memcpy(g_modem_tx_packet.packet_file.name_data,file_name,file_name_len);
-	g_modem_tx_packet.packet_file.name_data_size = file_name_len;
-	g_modem_tx_packet.packet_file.file_size = file_size;
+    // int offset_dir;
+    uint32_t temp;
+    // 获取偏差量
+    int offset_dir = m_com_buf.Rx_write - m_com_buf.Rx_read;
+    if(offset_dir > 0)
+    {
+        temp = (offset_dir>=RX_DEAL_MAX_SIZE)?RX_DEAL_MAX_SIZE:offset_dir;
+    }
+    else if(offset_dir < 0)
+    {
+        temp = ((RX_BUFF_SIZE-m_com_buf.Rx_read)>=RX_DEAL_MAX_SIZE)?
+                RX_DEAL_MAX_SIZE:RX_BUFF_SIZE-m_com_buf.Rx_read;
+    }
+    else
+    {
+        return;
+    }
+    if(g_ymodem.ymodem_rev_callBack !=0)
+    {
+        g_ymodem.ymodem_rev_callBack(&m_com_buf.Rx_part[m_com_buf.Rx_read],temp);
+        m_com_buf.Rx_read += temp;
+        m_com_buf.Rx_read = (m_com_buf.Rx_read >= RX_BUFF_SIZE) ? 0 : m_com_buf.Rx_read;
+    }
 }
+
+/******************************************************************************
+**函数信息 ：
+**功能描述 ：
+**输入参数 ：无
+**输出参数 ：无
+*******************************************************************************/
+void ymodem_loop(void)
+{
+    if(YmodemTimerValue > 1000)
+    {
+        YmodemTimerValue = 0;
+        if(g_write_C_disable==0)
+        {
+            g_ymodem.ymodem_tx_byte(CNC);
+        }
+    }
+    dev_comctrl_rx_handle();
+
+}
+
+
 /******************************************************************************
 **函数信息 ：
 **功能描述 ：
@@ -620,19 +677,6 @@ static char ymodem_tx_packet(uint8_t data)
         break;
     }
 	return 0;
-}
-
-/******************************************************************************
-**函数信息 ：
-**功能描述 ：
-**输入参数 ：无
-**输出参数 ：无
-*******************************************************************************/
-void ymodem_tx_handle(uint8_t  *buf, uint32_t sz)
-{
-    for(int i = 0; i<sz; i++) {
-        ymodem_tx_packet(buf[i]);
-    }
 }
 
 

@@ -178,7 +178,7 @@ error_exit:
 *******************************************************************************/
 int i = 0;
 // 接受时间处理
-void ymodem_rx_time_handle(void)
+void ymodem_loop(void)
 {
     if(i++ <1000000)
     {

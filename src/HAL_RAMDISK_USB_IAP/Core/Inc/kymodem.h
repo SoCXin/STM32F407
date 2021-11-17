@@ -144,7 +144,7 @@ void ymodem_init(Ymodem_TypeDef *ymodem);
 
 
 void ymodem_rx_handle(uint8_t *data,uint32_t len);
-void ymodem_rx_time_handle(void);
+void ymodem_loop(void);
 
 
 void ymodem_tx_init(char *file_name,char file_name_len,uint32_t file_size);

@@ -256,15 +256,10 @@ void test(void)
 	ymodem.ymodem_rx_finish_handle = g_ymodem_iap_done_handle;
 	ymodem.ymodem_tx_data_handle = g_ymodem_tx_data_handle;
 	ymodem.ymodem_rev_callBack = g_com_rx_callBack;
-//  dev_comctrl_regist_rx_callback(g_com_rx_callBack);
 	ymodem_init(&ymodem);
-	printf("Qitas test ymodem\r\n");
-	// ymodem_tx_init(name,sizeof(name),sizeof(file)-1);
+	printf("test ymodem\r\n");
     while (1)
     {
-        dev_comctrl_handle();
-        #ifdef USE_RX_MODE
-        ymodem_rx_time_handle();
-        #endif
+        ymodem_loop();
     }
 }

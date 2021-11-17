@@ -4,50 +4,6 @@
 #include <string.h>
 Com_paser_BuffTypedef m_com_buf;
 
-/******************************************************************************
-**函数信息 ：
-**功能描述 ：
-**输入参数 ：无
-**输出参数 ：无
-*******************************************************************************/
-static void dev_comctrl_rx_handle(void)
-{
-    int offset_dir;
-    uint32_t temp;
-    // 获取偏差量
-    offset_dir = m_com_buf.Rx_write - m_com_buf.Rx_read;
-    if(offset_dir > 0)
-    {
-        temp = (offset_dir>=RX_DEAL_MAX_SIZE)?RX_DEAL_MAX_SIZE:offset_dir;
-
-    }
-    else if(offset_dir < 0)
-    {
-        temp = ((RX_BUFF_SIZE-m_com_buf.Rx_read)>=RX_DEAL_MAX_SIZE)?
-                RX_DEAL_MAX_SIZE:RX_BUFF_SIZE-m_com_buf.Rx_read;
-    }
-    else
-    {
-        return;
-    }
-    if(g_ymodem.ymodem_rev_callBack !=0)
-    {
-        g_ymodem.ymodem_rev_callBack(&m_com_buf.Rx_part[m_com_buf.Rx_read],temp);
-        m_com_buf.Rx_read += temp;
-        m_com_buf.Rx_read = (m_com_buf.Rx_read >= RX_BUFF_SIZE) ? 0 : m_com_buf.Rx_read;
-    }
-}
-
-static void dev_comctrl_tx_handle(void)
-{
-
-}
-
-void dev_comctrl_handle(void)
-{
-    dev_comctrl_tx_handle();
-    dev_comctrl_rx_handle();
-}
 
 
 /******************************************************************************

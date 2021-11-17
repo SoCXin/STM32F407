@@ -290,7 +290,7 @@ int main(void)
   {
 		dev_comctrl_handle();
 		#ifdef USE_RX_MODE
-		ymodem_rx_time_handle();
+		ymodem_loop();
 		#endif
 
 		if(hUsbDeviceFS.dev_state != old_usb_state){

@@ -27,7 +27,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
-#include "dev_com.h"
+#include "ymodem.h"
 /* USER CODE END TD */
 
 /* Private define ------------------------------------------------------------*/
@@ -186,7 +186,7 @@ void SysTick_Handler(void)
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
-
+  ymodem_timer_interrupt();
   /* USER CODE END SysTick_IRQn 1 */
 }
 

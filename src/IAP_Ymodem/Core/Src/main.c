@@ -98,7 +98,20 @@ int main(void)
   MX_USART3_UART_Init();
   MX_RTC_Init();
   /* USER CODE BEGIN 2 */
-  test();
+	#ifdef IAP
+//	HAL_Delay(1000);
+//	HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
+//  typedef  void (*pFunction)(void);
+//	if (((*(__IO uint32_t*)USER_APP1_ADDRESS) & 0x2FFE0000 ) == 0x20000000)
+//	{
+//		uint32_t JumpAddress = *(__IO uint32_t*) (USER_APP1_ADDRESS + 4);
+//		pFunction Jump_To_Application = (pFunction) JumpAddress;
+//		__set_MSP(*(__IO uint32_t*) USER_APP1_ADDRESS);
+//		Jump_To_Application();
+//	}
+//iap_load_app(USER_APP1_ADDRESS);
+ test();
+	#endif
 
   /* USER CODE END 2 */
 
@@ -109,6 +122,11 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    #ifdef APP
+    HAL_GPIO_TogglePin(LED1_GPIO_Port,LED1_Pin);
+    HAL_Delay(600);
+    HAL_GPIO_TogglePin(LED2_GPIO_Port,LED2_Pin);
+		#endif
   }
   /* USER CODE END 3 */
 }

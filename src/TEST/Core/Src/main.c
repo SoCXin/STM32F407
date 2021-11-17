@@ -54,6 +54,7 @@ static void MX_GPIO_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+#define APPLICATION_ADDRESS   (uint32_t)0x08004000 
 
 /* USER CODE END 0 */
 
@@ -86,7 +87,23 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-
+	#ifdef BOOT
+	HAL_Delay(1000);
+	HAL_GPIO_WritePin(GPIOA, LED1_Pin, GPIO_PIN_SET);
+	typedef  void (*pFunction)(void);
+	pFunction Jump_To_Application;
+	uint32_t JumpAddress;
+	if (((*(__IO uint32_t*)APPLICATION_ADDRESS) & 0x2FFE0000 ) == 0x20000000)
+	{ 
+		/* Jump to user application */
+		JumpAddress = *(__IO uint32_t*) (APPLICATION_ADDRESS + 4);
+		Jump_To_Application = (pFunction) JumpAddress;
+		__set_MSP(*(__IO uint32_t*) APPLICATION_ADDRESS);
+		Jump_To_Application();
+	}
+	#endif
+//	HAL_Delay(500);
+//	HAL_GPIO_WritePin(GPIOA,LED2_Pin, GPIO_PIN_SET);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -96,9 +113,11 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+		#ifdef APP
     HAL_GPIO_TogglePin(LED1_GPIO_Port,LED1_Pin);
-    HAL_Delay(500);
+    HAL_Delay(300);
     HAL_GPIO_TogglePin(LED2_GPIO_Port,LED2_Pin);
+		#endif
   }
   /* USER CODE END 3 */
 }

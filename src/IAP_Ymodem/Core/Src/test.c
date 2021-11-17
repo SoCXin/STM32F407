@@ -120,17 +120,18 @@ void g_ymodem_tx_data_handle(uint8_t **file_read_addr, uint32_t  file_read_size,
 *******************************************************************************/
 void test(void)
 {
-    iap_load_app(USER_APP1_ADDRESS);
+    // iap_load_app(USER_APP1_ADDRESS);
 	LL_USART_EnableIT_RXNE(USART1);
 	LL_USART_EnableIT_PE(USART1);
 	LL_USART_EnableIT_RXNE(USART2);
 	LL_USART_EnableIT_PE(USART2);
 	LL_USART_EnableIT_RXNE(USART3);
 	LL_USART_EnableIT_PE(USART3);
-    if(Mark_Get(bkp_app1))
-    {
-        iap_load_app(USER_APP1_ADDRESS);
-    }
+    // if(Mark_Get(bkp_app1))
+    // {
+    //     Mark_Set(bkp_app1, 0);
+    //     iap_load_app(USER_APP1_ADDRESS);
+    // }
 	dev_comctrl_init();
 	dev_comctrl_regist_rx_callback(g_com_rx_callBack);
 

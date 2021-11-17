@@ -43,47 +43,20 @@ void iap_write_appbin(uint32_t appxaddr,uint8_t *appbuf,uint32_t appsize)
 **输入参数 ：无
 **输出参数 ：无
 *******************************************************************************/
-// void iap_load_app(uint32_t addr)
-// {
-//     typedef  void (*pFunction)(void);
-//     if (((*(__IO uint32_t*)addr) & 0x2FFE0000 ) == 0x20000000)
-//     {
-//         __disable_irq();     	//关总中断
-//         uint32_t JumpAddress = *(__IO uint32_t*) (addr + 4);
-//         pFunction Jump_To_Application = (pFunction) JumpAddress;
-//         __set_PSP(*(__IO uint32_t*) addr);
-//         __set_MSP(*(__IO uint32_t*) addr);
-//         __set_CONTROL(0);
-//         SCB->VTOR = addr;
-//         Jump_To_Application();
-//     }
-// }
-/******************************************************************************
-**函数信息 ：
-**功能描述 ：
-**输入参数 ：无
-**输出参数 ：无
-*******************************************************************************/
-__asm void MSR_MSP(uint32_t addr)
-{
-    MSR MSP, r0 			//set Main Stack value
-    BX r14
-}
-
 void iap_load_app(uint32_t addr)
 {
-    typedef  void (*iapfun)(void);
-    if(((*(__IO uint32_t*)addr)&0x2FFE0000)==0x20000000)	//检查栈顶地址是否合法.
+    typedef  void (*pFunction)(void);
+    if (((*(__IO uint32_t*)addr) & 0x2FFE0000 ) == 0x20000000)
     {
-//        __disable_irq();     	//关总中断
-        iapfun jump_app=(iapfun)*(__IO uint32_t*)(addr+4);		//用户代码区第二个字为程序开始地址(复位地址)
-        MSR_MSP(*(__IO uint32_t*)addr);					//初始化APP堆栈指针(用户代码区的第一个字用于存放栈顶地址)
-				__set_CONTROL(0);
+        // __disable_irq();     	//关总中断
+        pFunction jump_app=(pFunction)*(__IO uint32_t*)(addr+4);
+        __set_PSP(*(__IO uint32_t*) addr);
+        __set_MSP(*(__IO uint32_t*) addr);
+        __set_CONTROL(0);
         SCB->VTOR = addr;
-        jump_app();									//跳转到APP.
+        jump_app();
     }
 }
-
 
 /******************************************************************************
 **函数信息 ：

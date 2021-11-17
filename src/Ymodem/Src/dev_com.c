@@ -69,17 +69,17 @@ static void dev_comctrl_rx_handle(void)
         m_com_buf.Rx_read = (m_com_buf.Rx_read >= RX_BUFF_SIZE) ? 0 : m_com_buf.Rx_read;
     }
 }
-/******************************************************************************
-**函数信息 ：
-**功能描述 ：
-**输入参数 ：无
-**输出参数 ：无
-*******************************************************************************/
+
 static void dev_comctrl_tx_handle(void)
 {
 
 }
 
+void dev_comctrl_handle(void)
+{
+    dev_comctrl_tx_handle();
+    dev_comctrl_rx_handle();
+}
 /******************************************************************************
 **函数信息 ：
 **功能描述 ：
@@ -92,17 +92,7 @@ void dev_comctrl_init(void)
 	driver_com_regist_reccallback(2,dev_comctrl_interrput_rx_handle);
 	//drv_com_printf(com1,"this is from com1");
 }
-/******************************************************************************
-**函数信息 ：
-**功能描述 ：
-**输入参数 ：无
-**输出参数 ：无
-*******************************************************************************/
-void dev_comctrl_handle(void)
-{
-    dev_comctrl_tx_handle();
-    dev_comctrl_rx_handle();
-}
+
 /******************************************************************************
 **函数信息 ：
 **功能描述 ：

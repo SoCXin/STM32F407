@@ -1,12 +1,8 @@
-
+#include "ymodem.h"
 #include "dev_com.h"
 #include "usart.h"
 #include <string.h>
 Com_paser_BuffTypedef m_com_buf;
-// 接收回调函数
-void (*m_com_rev_callBack)(unsigned char* data,uint32_t size) = 0;
-
-
 
 /******************************************************************************
 **函数信息 ：
@@ -34,9 +30,9 @@ static void dev_comctrl_rx_handle(void)
     {
         return;
     }
-    if(m_com_rev_callBack !=0)
+    if(g_ymodem.ymodem_rev_callBack !=0)
     {
-        m_com_rev_callBack(&m_com_buf.Rx_part[m_com_buf.Rx_read],temp);
+        g_ymodem.ymodem_rev_callBack(&m_com_buf.Rx_part[m_com_buf.Rx_read],temp);
         m_com_buf.Rx_read += temp;
         m_com_buf.Rx_read = (m_com_buf.Rx_read >= RX_BUFF_SIZE) ? 0 : m_com_buf.Rx_read;
     }
@@ -90,17 +86,7 @@ void drv_com3_write(char data)
 **输入参数 ：无
 **输出参数 ：无
 *******************************************************************************/
-void (*drv_com1_handle)(unsigned char data);
-void (*drv_com2_handle)(unsigned char data);
-void (*drv_com3_handle)(unsigned char data);
-
-/******************************************************************************
-**函数信息 ：
-**功能描述 ：
-**输入参数 ：无
-**输出参数 ：无
-*******************************************************************************/
-static void dev_comctrl_interrput_rx_handle(uint8_t data)
+void dev_comctrl_interrput_rx_handle(uint8_t data)
 {
     // 接收缓冲区添加数据
     m_com_buf.Rx_part[m_com_buf.Rx_write++] = data;
@@ -119,46 +105,14 @@ static void dev_comctrl_interrput_rx_handle(uint8_t data)
 **输入参数 ：无
 **输出参数 ：无
 *******************************************************************************/
+void (*drv_com1_handle)(unsigned char data);
+void (*drv_com2_handle)(unsigned char data);
+void (*drv_com3_handle)(unsigned char data);
+
 void dev_comctrl_init(void)
 {
     memset(&m_com_buf,0,sizeof(Com_paser_BuffTypedef));
-	driver_com_regist_reccallback(2,dev_comctrl_interrput_rx_handle);
-	//drv_com_printf(com1,"this is from com1");
-}
-// void sys_com_regist_reccallback(uint32_t USARTx,void (*drv_com_m_handle)(unsigned char data))
-// {
-// 	switch(USARTx)
-// 	{
-// 		case 1:
-// 			drv_com1_handle = drv_com_m_handle;
-// 			break;
-// 		case 2:
-// 			drv_com2_handle = drv_com_m_handle;
-// 			break;
-// 		case 3:
-// 			drv_com3_handle = drv_com_m_handle;
-// 			break;
-// 	}
-// }
 
-void driver_com_regist_reccallback(uint32_t USARTx,void (*drv_com_m_handle)(unsigned char data))
-{
-    switch(USARTx)
-	{
-		case 1:
-			drv_com1_handle = drv_com_m_handle;
-			break;
-		case 2:
-			drv_com2_handle = drv_com_m_handle;
-			break;
-		case 3:
-			drv_com3_handle = drv_com_m_handle;
-			break;
-	}
-	// sys_com_regist_reccallback(USARTx,drv_com_m_handle);
 }
 
-void dev_comctrl_regist_rx_callback(void (*arg_callBack)(unsigned char* data,uint32_t size))
-{
-	m_com_rev_callBack = arg_callBack;
-}
+

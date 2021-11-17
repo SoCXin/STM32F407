@@ -224,7 +224,7 @@ void USART2_IRQHandler(void)
   /* USER CODE BEGIN USART2_IRQn 1 */
   if(LL_USART_IsActiveFlag_RXNE(USART2))
 	{
-    drv_com2_handle(USART2->DR);
+    dev_comctrl_interrput_rx_handle(USART2->DR);
 	}
   /* USER CODE END USART2_IRQn 1 */
 }

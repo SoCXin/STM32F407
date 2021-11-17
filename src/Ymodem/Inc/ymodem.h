@@ -153,11 +153,11 @@ typedef struct
 	void (*ymodem_rx_data_handle)(char *data, uint16_t len,uint32_t download_byte,uint8_t percent);
 	void (*ymodem_rx_finish_handle)(int data);
 	void (*ymodem_tx_byte)(char byte);
+    void (*ymodem_rev_callBack)(unsigned char* data,uint32_t size);
 	void (*ymodem_tx_data_handle)(uint8_t **file_read_addr, uint32_t  file_read_size, uint32_t file_has_read_size,  uint32_t file_remain_size,uint8_t percent);
 }Ymodem_TypeDef;
 
-// ≥ı ºªØ
-
+extern Ymodem_TypeDef g_ymodem;
 
 void ymodem_init(Ymodem_TypeDef *ymodem);
 void ymodem_rx_handle(uint8_t *data,uint32_t len);

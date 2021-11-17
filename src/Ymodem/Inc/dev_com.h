@@ -32,6 +32,7 @@ void drv_com1_write(char data);
 void drv_com2_write(char data);
 void drv_com3_write(char data);
 
+void dev_comctrl_interrput_rx_handle(uint8_t data);
 // 端口控制器初始化
 void dev_comctrl_init(void);
 void dev_comctrl_handle(void);

@@ -58,7 +58,7 @@ void ymodem_rx_handle(uint8_t *data,uint32_t rx_size)
             {
                 error_code = FRAME_PARSER_ABORT_ERROR;
 
-                g_ymodem.ymodem_rx_finish_handle(PACKET_RX_ABORT_ERROR);
+                g_ymodem.rx_done_handle(PACKET_RX_ABORT_ERROR);
                 goto error_exit;
             }
 
@@ -140,10 +140,10 @@ void ymodem_rx_handle(uint8_t *data,uint32_t rx_size)
                 } else if(g_frame.head == SOH) {
 
                     if(g_modem_rx_packet.packet_file.file_size == g_modem_rx_packet.packet_file.sent_rec_file_size) {
-                        g_ymodem.ymodem_rx_finish_handle(PACKET_RX_FINISH_OK);
+                        g_ymodem.rx_done_handle(PACKET_RX_FINISH_OK);
                     } else {
                         error_code =FRAME_PARSER_DATA_SIZE_NOTEQ_ERROR;
-                        g_ymodem.ymodem_rx_finish_handle(PACKET_RX_DATA_SIZE_NOTEQ_ERROR);
+                        g_ymodem.rx_done_handle(PACKET_RX_DATA_SIZE_NOTEQ_ERROR);
                         goto error_exit;
                     }
                 } else {

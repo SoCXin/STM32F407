@@ -276,7 +276,7 @@ int main(void)
 	LL_USART_EnableIT_RXNE(USART1);
 	LL_USART_EnableIT_PE(USART1);
 
-	dev_comctrl_init();
+	dev_uart_init();
 	printf("init\r\n");
 
 	uint8_t old_usb_state = 0;

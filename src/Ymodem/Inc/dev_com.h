@@ -25,16 +25,17 @@ extern Com_paser_BuffTypedef m_com_buf;
 extern void driver_com_regist_reccallback(uint32_t USARTx,void (*drv_com_m_handle)(unsigned char data));
 extern void dev_comctrl_regist_rx_callback(void (*arg_callBack)(unsigned char* data,uint32_t size));
 
-extern void (*drv_com1_handle)(unsigned char data);
-extern void (*drv_com2_handle)(unsigned char data);
-extern void (*drv_com3_handle)(unsigned char data);
+
+extern void (*drv_com1_interrput)(char data);
+extern void (*drv_com2_interrput)(char data);
+extern void (*drv_com3_interrput)(char data);
 
 void drv_com1_write(char data);
 void drv_com2_write(char data);
 void drv_com3_write(char data);
 
-void dev_comctrl_interrput_rx_handle(uint8_t data);
+// void dev_rx_handle_interrput(uint8_t data);
 // 端口控制器初始化
-void dev_comctrl_init(void);
-
+void dev_uart_init(void);
+void com_interrput_callback(uint32_t USARTx,void (*drv_com_m_handle)(char data));
 #endif

@@ -217,21 +217,7 @@ void g_ymodem_tx_data_handle(uint8_t **file_read_addr, uint32_t  file_read_size,
     // 指针指向的地址 重新指向
     *file_read_addr = &file[file_has_read_size];
 }
-/******************************************************************************
-**函数信息 ：
-**功能描述 ：串口接受回调
-**输入参数 ：无
-**输出参数 ：无
-*******************************************************************************/
-void g_com_rx_callBack(unsigned char* data,uint32_t size)
-{
 
-	// #ifdef USE_RX_MODE
-	ymodem_rx_handle(data,size);
-	// #else
-	// ymodem_tx_handle(data,size);
-	// #endif
-}
 /******************************************************************************
 **函数信息 ：
 **功能描述 ：发送数据处理
@@ -248,14 +234,14 @@ void test(void)
 	LL_USART_EnableIT_PE(USART3);
 
 	Ymodem_TypeDef ymodem;
-//    ymodem.ymodem_rx_interrupt=
+    ymodem.rx_interrupt=
 	ymodem.ymodem_tx_byte = drv_com2_write;
+    ymodem.ymodem_rx_callback = ymodem_rx_handle;
 	ymodem.ymodem_rx_head_handle = g_ymodem_rx_head_handle;
 	ymodem.ymodem_rx_data_handle = g_ymodem_rx_data_handle;
     ymodem.ymodem_rx_error_handle = g_ymodem_rx_error_handle;
-	ymodem.ymodem_rx_finish_handle = g_ymodem_iap_done_handle;
+	ymodem.rx_done_handle = g_ymodem_iap_done_handle;
 	ymodem.ymodem_tx_data_handle = g_ymodem_tx_data_handle;
-	ymodem.ymodem_rev_callBack = g_com_rx_callBack;
 	ymodem_init(&ymodem);
 	printf("test ymodem\r\n");
     while (1)

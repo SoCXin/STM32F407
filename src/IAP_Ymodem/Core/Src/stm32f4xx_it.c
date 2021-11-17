@@ -205,7 +205,7 @@ void USART1_IRQHandler(void)
   /* USER CODE BEGIN USART1_IRQn 0 */
   if(LL_USART_IsActiveFlag_RXNE(USART1))
 	{
-    drv_com1_handle(LL_USART_ReceiveData8(USART1));
+    drv_com1_interrput(USART1->DR);
 	}
   /* USER CODE END USART1_IRQn 0 */
   /* USER CODE BEGIN USART1_IRQn 1 */
@@ -224,7 +224,7 @@ void USART2_IRQHandler(void)
   /* USER CODE BEGIN USART2_IRQn 1 */
   if(LL_USART_IsActiveFlag_RXNE(USART2))
 	{
-    dev_comctrl_interrput_rx_handle(USART2->DR);
+    drv_com2_interrput(USART2->DR);
 	}
   /* USER CODE END USART2_IRQn 1 */
 }
@@ -240,7 +240,7 @@ void USART3_IRQHandler(void)
   /* USER CODE BEGIN USART3_IRQn 1 */
   if(LL_USART_IsActiveFlag_RXNE(USART3))
 	{
-    drv_com3_handle(LL_USART_ReceiveData8(USART3));
+    drv_com3_interrput(USART3->DR);
 	}
   /* USER CODE END USART3_IRQn 1 */
 }

@@ -23,7 +23,7 @@ typedef struct
 
 
 // 端口控制器初始化
-void dev_comctrl_init(void);
+void dev_uart_init(void);
 void dev_comctrl_handle(void);
 void dev_comctrl_regist_rx_callback(void (*arg_callBack)(unsigned char* data,uint32_t size));
 #endif

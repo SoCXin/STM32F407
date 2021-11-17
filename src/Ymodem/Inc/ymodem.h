@@ -148,13 +148,13 @@ typedef enum {
 
 typedef struct
 {
-    void (*ymodem_rx_interrupt)(uint8_t data);
+    void (*rx_interrupt)(uint8_t data);
 	void (*ymodem_rx_error_handle)(int error_code);
 	char (*ymodem_rx_head_handle)(char *file_name,uint16_t file_name_len, uint32_t file_len);
 	void (*ymodem_rx_data_handle)(char *data, uint16_t len,uint32_t download_byte,uint8_t percent);
-	void (*ymodem_rx_finish_handle)(int data);
+	void (*rx_done_handle)(int data);
 	void (*ymodem_tx_byte)(char byte);
-    void (*ymodem_rev_callBack)(unsigned char* data,uint32_t size);
+    void (*ymodem_rx_callback)(unsigned char* data,uint32_t size);
 	void (*ymodem_tx_data_handle)(uint8_t **file_read_addr, uint32_t  file_read_size, uint32_t file_has_read_size,  uint32_t file_remain_size,uint8_t percent);
 }Ymodem_TypeDef;
 

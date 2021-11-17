@@ -47,7 +47,7 @@ void ymodem_rx_handle(uint8_t *data,uint32_t rx_size)
             if(g_modem_rx_packet.now_packet_index == g_modem_rx_packet.last_packet_index && g_modem_rx_packet.last_packet_index!=0 && g_frame.head!=EOT)
             {
                 error_code = FRAME_PARSER_ABORT_ERROR;
-                g_ymodem.ymodem_rx_finish_handle(PACKET_RX_ABORT_ERROR);
+                g_ymodem.rx_done_handle(PACKET_RX_ABORT_ERROR);
                 goto error_exit;
             }
             // 已经接受到了数据
@@ -140,10 +140,10 @@ void ymodem_rx_handle(uint8_t *data,uint32_t rx_size)
                 } else if(g_frame.head == SOH)
                 {
                     if(g_modem_rx_packet.packet_file.file_size == g_modem_rx_packet.packet_file.sent_rec_file_size) {
-                        g_ymodem.ymodem_rx_finish_handle(PACKET_RX_FINISH_OK);
+                        g_ymodem.rx_done_handle(PACKET_RX_FINISH_OK);
                     } else {
                         error_code =FRAME_PARSER_DATA_SIZE_NOTEQ_ERROR;
-                        g_ymodem.ymodem_rx_finish_handle(PACKET_RX_DATA_SIZE_NOTEQ_ERROR);
+                        g_ymodem.rx_done_handle(PACKET_RX_DATA_SIZE_NOTEQ_ERROR);
                         goto error_exit;
                     }
                 } else {
@@ -473,8 +473,7 @@ void ymodem_tx_handle(uint8_t  *buf, uint32_t sz)
 *******************************************************************************/
 void ymodem_init(Ymodem_TypeDef *ymodem)
 {
-    dev_comctrl_init();
-    // ymodem_tx_init(name,sizeof(name),sizeof(file)-1);
+    dev_uart_init();
     g_ymodem = *ymodem;
 }
 
@@ -503,9 +502,9 @@ void dev_comctrl_rx_handle(void)
     {
         return;
     }
-    if(g_ymodem.ymodem_rev_callBack !=0)
+    if(g_ymodem.ymodem_rx_callback !=0)
     {
-        g_ymodem.ymodem_rev_callBack(&m_com_buf.Rx_part[m_com_buf.Rx_read],temp);
+        g_ymodem.ymodem_rx_callback(&m_com_buf.Rx_part[m_com_buf.Rx_read],temp);
         m_com_buf.Rx_read += temp;
         m_com_buf.Rx_read = (m_com_buf.Rx_read >= RX_BUFF_SIZE) ? 0 : m_com_buf.Rx_read;
     }

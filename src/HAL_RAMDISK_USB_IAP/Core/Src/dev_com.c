@@ -8,7 +8,7 @@
  * ---------------------------------------------------------------------------------------------------------------
  * Modifier                                    Data                                             Brief
  * -------------------------------------------------------------------------------------------------------------*/
- 
+
 #include "dev_com.h"
 #include "drv_com.h"
 
@@ -19,21 +19,21 @@ Com_paser_BuffTypedef m_com_buf;
 void (*m_com_rev_callBack)(unsigned char* data,uint32_t size) = 0;
 
 static void dev_comctrl_buff_init(void);
-static void dev_comctrl_interrput_rx_handle(uint8_t data);
+static void dev_rx_handle_interrput(uint8_t data);
 static void dev_comctrl_tx_handle(void);
 static void dev_comctrl_rx_handle(void);
 
 /**
-* @ Function Name : dev_comctrl_init
+* @ Function Name : dev_uart_init
 * @ Author        : ygl
 * @ Brief         : 端口控制器初始化
 * @ Date          : 2018.11.18
 * @ Modify        : ...
 **/
-void dev_comctrl_init(void)
-{	
+void dev_uart_init(void)
+{
 	dev_comctrl_buff_init();
-	driver_com_regist_reccallback(1,dev_comctrl_interrput_rx_handle);
+	driver_com_regist_reccallback(1,dev_rx_handle_interrput);
 	//drv_com_printf(com1,"this is from com1");
 }
 /**
@@ -77,7 +77,7 @@ static void dev_comctrl_buff_init(void){
 * @ Date          : 2018.11.18
 * @ Modify        : ...
 **/
-static void dev_comctrl_interrput_rx_handle(uint8_t data){
+static void dev_rx_handle_interrput(uint8_t data){
 	// 接收缓冲区添加数据
 	m_com_buf.Rx_part[m_com_buf.Rx_write++] = data;
 	// 如果达到末尾,写指针归零
@@ -129,6 +129,6 @@ static void dev_comctrl_rx_handle(void){
 * @ Modify        : ...
 **/
 static void dev_comctrl_tx_handle(void){
-	
+
 }
 

@@ -36,6 +36,6 @@ void drv_com3_write(char data);
 
 // void dev_rx_handle_interrput(uint8_t data);
 // 端口控制器初始化
-void dev_uart_init(void);
+void dev_uart_init(uint32_t USARTx);
 void com_interrput_callback(uint32_t USARTx,void (*drv_com_m_handle)(char data));
 #endif

@@ -4,6 +4,11 @@
 #include <string.h>
 Com_paser_BuffTypedef m_com_buf;
 
+//#define UART3_W     HAL_GPIO_WritePin(RS485_EN_GPIO_Port, RS485_EN_Pin, GPIO_PIN_SET)
+//#define UART3_R     HAL_GPIO_WritePin(RS485_EN_GPIO_Port, RS485_EN_Pin, GPIO_PIN_RESET)
+void (*drv_com1_interrput)(char data);
+void (*drv_com2_interrput)(char data);
+void (*drv_com3_interrput)(char data);
 
 /******************************************************************************
 **函数信息 ：
@@ -35,25 +40,32 @@ void (*drv_tx_byte)(char data);
 
 void drv_com1_write(char data)
 {
+    #ifdef UART1_W
+    UART1_W;
+    #endif
 	USART1->DR = data;
     while((USART1->SR&0X40)==0);
-	// LL_USART_TransmitData8(USART1,data);
-	// while (LL_USART_IsActiveFlag_TXE(USART1)== RESET);
+    #ifdef UART1_R
+    UART1_R;
+    #endif
 }
 void drv_com2_write(char data)
 {
 	USART2->DR = data;
     while((USART2->SR&0X40)==0);
-	// LL_USART_TransmitData8(USART2,data);
-	// while (LL_USART_IsActiveFlag_TXE(USART2)== RESET);
 }
 void drv_com3_write(char data)
 {
+    #ifdef UART3_W
+    UART3_W;
+    #endif
 	USART3->DR = data;
     while((USART3->SR&0X40)==0);
-	// LL_USART_TransmitData8(USART3,data);
-	// while (LL_USART_IsActiveFlag_TXE(USART3)== RESET);
+    #ifdef UART3_R
+    UART3_R;
+    #endif
 }
+
 
 /******************************************************************************
 **函数信息 ：
@@ -61,38 +73,32 @@ void drv_com3_write(char data)
 **输入参数 ：无
 **输出参数 ：无
 *******************************************************************************/
-void (*drv_com1_interrput)(char data);
-void (*drv_com2_interrput)(char data);
-void (*drv_com3_interrput)(char data);
-
-void com_regist_callback(uint32_t USARTx)
+void dev_uart_init(uint32_t USARTx)
 {
+    memset(&m_com_buf,0,sizeof(Com_paser_BuffTypedef));
     switch(USARTx)
     {
         case 1:
+            LL_USART_EnableIT_RXNE(USART1);
+            LL_USART_EnableIT_PE(USART1);
             drv_com1_interrput = drv_rx_interrput;
             drv_tx_byte = drv_com1_write;
             break;
         case 2:
+            LL_USART_EnableIT_RXNE(USART2);
+            LL_USART_EnableIT_PE(USART2);
             drv_com2_interrput = drv_rx_interrput;
             drv_tx_byte = drv_com2_write;
             break;
         case 3:
+            LL_USART_EnableIT_RXNE(USART3);
+            LL_USART_EnableIT_PE(USART3);
             drv_com2_interrput = drv_rx_interrput;
             drv_tx_byte = drv_com3_write;
+            #ifdef UART3_R
+            UART3_R;
+            #endif
             break;
     }
-}
-
-/******************************************************************************
-**函数信息 ：
-**功能描述 ：
-**输入参数 ：无
-**输出参数 ：无
-*******************************************************************************/
-void dev_uart_init(void)
-{
-    memset(&m_com_buf,0,sizeof(Com_paser_BuffTypedef));
-    com_regist_callback(2);
 }
 

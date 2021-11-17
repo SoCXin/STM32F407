@@ -1,14 +1,10 @@
 #ifndef __BOOTLOADER_H
 #define __BOOTLOADER_H
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #include "main.h"
-#include "usart.h"
-#include "common.h"
-
 
 #define USER_APP1_ADDRESS   0x08004000
 #define USER_APP2_ADDRESS   0x08008000
@@ -39,20 +35,9 @@ typedef enum
 
 uint32_t Mark_Set(bkp_type flag, uint32_t val);
 uint32_t Mark_Get(bkp_type flag);
-uint8_t appjump(const uint32_t addr);
-
-void sysReset(void);
+void appjump(uint32_t appxaddr);
 void sysUpdate(uint32_t chsum);
-
-uint16_t Modem_CRC16(uint8_t * buf, uint16_t len);
-
-void Int2Str(uint8_t *p_str, uint32_t intnum);
-uint32_t Str2Int(uint8_t *inputstr, uint32_t *intnum);
-
-void Ymodem_Init(void);
-
-void iap_write_appbin(uint32_t appxaddr,uint8_t *appbuf,uint32_t appsize);
-void iap_load_app(uint32_t appxaddr);
+void sysReset(void);
 
 #ifdef __cplusplus
 }

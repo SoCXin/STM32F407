@@ -1,8 +1,6 @@
 #include "main.h"
 #include "ymodem.h"
 #include "dev_com.h"
-// #include "drv_com.h"
-// #include "flash_if.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <stdarg.h>
@@ -162,26 +160,6 @@ char g_ymodem_rx_head_handle(char *file_name,uint16_t file_name_len, uint32_t fi
 **输入参数 ：无
 **输出参数 ：无
 *******************************************************************************/
-void iap_load_app(uint32_t addr)
-{
-    typedef  void (*pFunction)(void);
-    if (((*(__IO uint32_t*)addr) & 0x2FFE0000 ) == 0x20000000)
-    {
-        // __disable_irq();     	//关总中断
-        pFunction jump_app=(pFunction)*(__IO uint32_t*)(addr+4);
-        __set_PSP(*(__IO uint32_t*) addr);
-        __set_MSP(*(__IO uint32_t*) addr);
-        __set_CONTROL(0);
-        SCB->VTOR = addr;
-        jump_app();
-    }
-}
-/******************************************************************************
-**函数信息 ：
-**功能描述 ：接受完成回调
-**输入参数 ：无
-**输出参数 ：无
-*******************************************************************************/
 void g_ymodem_iap_done_handle(int state)
 {
     typedef void (*pFunction)(void);
@@ -226,20 +204,18 @@ void g_ymodem_tx_data_handle(uint8_t **file_read_addr, uint32_t  file_read_size,
 *******************************************************************************/
 void test(void)
 {
-	LL_USART_EnableIT_RXNE(USART1);
-	LL_USART_EnableIT_PE(USART1);
-	LL_USART_EnableIT_RXNE(USART2);
-	LL_USART_EnableIT_PE(USART2);
-	LL_USART_EnableIT_RXNE(USART3);
-	LL_USART_EnableIT_PE(USART3);
+	// LL_USART_EnableIT_RXNE(USART1);
+	// LL_USART_EnableIT_PE(USART1);
+	// LL_USART_EnableIT_RXNE(USART2);
+	// LL_USART_EnableIT_PE(USART2);
 
 	Ymodem_TypeDef ymodem;
-    ymodem.rx_interrupt=
-	ymodem.ymodem_tx_byte = drv_com2_write;
-    ymodem.ymodem_rx_callback = ymodem_rx_handle;
+// //   ymodem.rx_interrupt=
+// 	ymodem.ymodem_tx_byte = drv_com3_write;
+   ymodem.ymodem_rx_callback = ymodem_rx_handle;
 	ymodem.ymodem_rx_head_handle = g_ymodem_rx_head_handle;
 	ymodem.ymodem_rx_data_handle = g_ymodem_rx_data_handle;
-    ymodem.ymodem_rx_error_handle = g_ymodem_rx_error_handle;
+   ymodem.ymodem_rx_error_handle = g_ymodem_rx_error_handle;
 	ymodem.rx_done_handle = g_ymodem_iap_done_handle;
 	ymodem.ymodem_tx_data_handle = g_ymodem_tx_data_handle;
 	ymodem_init(&ymodem);

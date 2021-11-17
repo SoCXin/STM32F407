@@ -3,12 +3,13 @@
 #include "kymodem.h"
 #include "dev_com.h"
 #include "drv_com.h"
-#include "iap.h"
+#include "bootloader.h"
 #include "flash_if.h"
 #include "common.h"
 
 #define USE_RX_MODE
 #define KAPP_ADDR  (uint32_t)0x08004000
+
 
 #include <stdio.h>
 int fputc(int ch, FILE *f)
@@ -84,13 +85,17 @@ void g_ymodem_rx_data_handle(char *data, uint16_t len,uint32_t download_byte,uin
 *******************************************************************************/
 void g_ymodem_rx_finish_handle(int state)
 {
-    if(state ==0){
+    if(state ==0)
+    {
         printf("--file end--\r\n");
         iap_load_app(KAPP_ADDR);
-    }else{
-        printf("--file end error1 :%d--\r\n",state);
+    }
+    else
+    {
+        printf("--file end error :%d--\r\n",state);
     }
 }
+
 /******************************************************************************
 **函数信息 ：
 **功能描述 ：发送数据处理
@@ -99,7 +104,6 @@ void g_ymodem_rx_finish_handle(int state)
 *******************************************************************************/
 char name[] = "testupload.txt";
 char file[] = "asdjlfaj129384719823749817239847198273498sdflajsldfjalsdjflasa134917239419823749817298347918237haksjdhfkahsdfkjhaskdjfhkahsd123456789";
-//
 void g_ymodem_tx_data_handle(uint8_t **file_read_addr, uint32_t  file_read_size, uint32_t file_has_read_size,  uint32_t file_remain_size,uint8_t percent)
 {
     printf("read size:%d  has_read:%d  remain:%d  per:%d\r\n",file_read_size,file_has_read_size,  file_remain_size,percent);
@@ -133,7 +137,7 @@ void test(void)
 	ymodem.ymodem_rx_finish_handle = g_ymodem_rx_finish_handle;
 	ymodem.ymodem_tx_data_handle = g_ymodem_tx_data_handle;
 	ymodem_init(&ymodem);
-	printf("qitas test IAP\r\n");
+	printf("qitas test boot\r\n");
 	FLASH_If_Init();
 	ymodem_tx_init(name,sizeof(name),sizeof(file)-1);
     while (1)

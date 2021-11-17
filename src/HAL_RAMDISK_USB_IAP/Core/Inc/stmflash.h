@@ -4,39 +4,39 @@
 #include "common.h"
 
 
-//FLASHÆğÊ¼µØÖ·
-#define STM32_FLASH_BASE 0x08000000 	//STM32 FLASHµÄÆğÊ¼µØÖ·
-#define FLASH_WAITETIME  50000          //FLASHµÈ´ı³¬Ê±Ê±¼ä
+//FLASHèµ·å§‹åœ°å€
+#define STM32_FLASH_BASE 0x08000000 	//STM32 FLASHçš„èµ·å§‹åœ°å€
+#define FLASH_WAITETIME  50000          //FLASHç­‰å¾…è¶…æ—¶æ—¶é—´
 
-//FLASH ÉÈÇøµÄÆğÊ¼µØÖ·
-#define ADDR_FLASH_SECTOR_0     ((uint32_t)0x08000000) 	//ÉÈÇø0ÆğÊ¼µØÖ·, 16 Kbytes  
-#define ADDR_FLASH_SECTOR_1     ((uint32_t)0x08004000) 	//ÉÈÇø1ÆğÊ¼µØÖ·, 16 Kbytes  
-#define ADDR_FLASH_SECTOR_2     ((uint32_t)0x08008000) 	//ÉÈÇø2ÆğÊ¼µØÖ·, 16 Kbytes  
-#define ADDR_FLASH_SECTOR_3     ((uint32_t)0x0800C000) 	//ÉÈÇø3ÆğÊ¼µØÖ·, 16 Kbytes  
-#define ADDR_FLASH_SECTOR_4     ((uint32_t)0x08010000) 	//ÉÈÇø4ÆğÊ¼µØÖ·, 64 Kbytes  
-#define ADDR_FLASH_SECTOR_5     ((uint32_t)0x08020000) 	//ÉÈÇø5ÆğÊ¼µØÖ·, 128 Kbytes  
-#define ADDR_FLASH_SECTOR_6     ((uint32_t)0x08040000) 	//ÉÈÇø6ÆğÊ¼µØÖ·, 128 Kbytes  
-#define ADDR_FLASH_SECTOR_7     ((uint32_t)0x08060000) 	//ÉÈÇø7ÆğÊ¼µØÖ·, 128 Kbytes  
-#define ADDR_FLASH_SECTOR_8     ((uint32_t)0x08080000) 	//ÉÈÇø8ÆğÊ¼µØÖ·, 128 Kbytes  
-#define ADDR_FLASH_SECTOR_9     ((uint32_t)0x080A0000) 	//ÉÈÇø9ÆğÊ¼µØÖ·, 128 Kbytes  
-#define ADDR_FLASH_SECTOR_10    ((uint32_t)0x080C0000) 	//ÉÈÇø10ÆğÊ¼µØÖ·,128 Kbytes  
-#define ADDR_FLASH_SECTOR_11    ((uint32_t)0x080E0000) 	//ÉÈÇø11ÆğÊ¼µØÖ·,128 Kbytes 
+//FLASH æ‰‡åŒºçš„èµ·å§‹åœ°å€
+#define ADDR_FLASH_SECTOR_0     ((uint32_t)0x08000000) 	//æ‰‡åŒº0èµ·å§‹åœ°å€, 16 Kbytes
+#define ADDR_FLASH_SECTOR_1     ((uint32_t)0x08004000) 	//æ‰‡åŒº1èµ·å§‹åœ°å€, 16 Kbytes
+#define ADDR_FLASH_SECTOR_2     ((uint32_t)0x08008000) 	//æ‰‡åŒº2èµ·å§‹åœ°å€, 16 Kbytes
+#define ADDR_FLASH_SECTOR_3     ((uint32_t)0x0800C000) 	//æ‰‡åŒº3èµ·å§‹åœ°å€, 16 Kbytes
+#define ADDR_FLASH_SECTOR_4     ((uint32_t)0x08010000) 	//æ‰‡åŒº4èµ·å§‹åœ°å€, 64 Kbytes
+#define ADDR_FLASH_SECTOR_5     ((uint32_t)0x08020000) 	//æ‰‡åŒº5èµ·å§‹åœ°å€, 128 Kbytes
+#define ADDR_FLASH_SECTOR_6     ((uint32_t)0x08040000) 	//æ‰‡åŒº6èµ·å§‹åœ°å€, 128 Kbytes
+#define ADDR_FLASH_SECTOR_7     ((uint32_t)0x08060000) 	//æ‰‡åŒº7èµ·å§‹åœ°å€, 128 Kbytes
+#define ADDR_FLASH_SECTOR_8     ((uint32_t)0x08080000) 	//æ‰‡åŒº8èµ·å§‹åœ°å€, 128 Kbytes
+#define ADDR_FLASH_SECTOR_9     ((uint32_t)0x080A0000) 	//æ‰‡åŒº9èµ·å§‹åœ°å€, 128 Kbytes
+#define ADDR_FLASH_SECTOR_10    ((uint32_t)0x080C0000) 	//æ‰‡åŒº10èµ·å§‹åœ°å€,128 Kbytes
+#define ADDR_FLASH_SECTOR_11    ((uint32_t)0x080E0000) 	//æ‰‡åŒº11èµ·å§‹åœ°å€,128 Kbytes
 
-#define ADDR_FLASH_SECTOR_12	((uint32_t)0x08100000) 	//ÉÈÇø12ÆğÊ¼µØÖ·, 16 Kbytes  
-#define ADDR_FLASH_SECTOR_13	((uint32_t)0x08104000) 	//ÉÈÇø13ÆğÊ¼µØÖ·, 16 Kbytes  
-#define ADDR_FLASH_SECTOR_14    ((uint32_t)0x08108000) 	//ÉÈÇø14ÆğÊ¼µØÖ·, 16 Kbytes  
-#define ADDR_FLASH_SECTOR_15	((uint32_t)0x0810C000) 	//ÉÈÇø15ÆğÊ¼µØÖ·, 16 Kbytes  
-#define ADDR_FLASH_SECTOR_16    ((uint32_t)0x08110000) 	//ÉÈÇø16ÆğÊ¼µØÖ·, 64 Kbytes  
-#define ADDR_FLASH_SECTOR_17	((uint32_t)0x08120000) 	//ÉÈÇø17ÆğÊ¼µØÖ·, 128 Kbytes  
-#define ADDR_FLASH_SECTOR_18	((uint32_t)0x08140000) 	//ÉÈÇø18ÆğÊ¼µØÖ·, 128 Kbytes  
-#define ADDR_FLASH_SECTOR_19	((uint32_t)0x08160000) 	//ÉÈÇø19ÆğÊ¼µØÖ·, 128 Kbytes  
-#define ADDR_FLASH_SECTOR_20    ((uint32_t)0x08180000) 	//ÉÈÇø20ÆğÊ¼µØÖ·, 128 Kbytes  
-#define ADDR_FLASH_SECTOR_21	((uint32_t)0x081A0000) 	//ÉÈÇø21ÆğÊ¼µØÖ·, 128 Kbytes  
-#define ADDR_FLASH_SECTOR_22    ((uint32_t)0x081C0000) 	//ÉÈÇø22ÆğÊ¼µØÖ·, 128 Kbytes  
-#define ADDR_FLASH_SECTOR_23    ((uint32_t)0x081E0000) 	//ÉÈÇø23ÆğÊ¼µØÖ·, 128 Kbytes   
- 
-uint32_t STMFLASH_ReadWord(uint32_t faddr);		  	//¶Á³ö×Ö  
-void STMFLASH_Write(uint32_t WriteAddr,uint32_t *pBuffer,uint32_t NumToWrite);		//´ÓÖ¸¶¨µØÖ·¿ªÊ¼Ğ´ÈëÖ¸¶¨³¤¶ÈµÄÊı¾İ
-void STMFLASH_Read(uint32_t ReadAddr,uint32_t *pBuffer,uint32_t NumToRead);   		//´ÓÖ¸¶¨µØÖ·¿ªÊ¼¶Á³öÖ¸¶¨³¤¶ÈµÄÊı¾İ
+#define ADDR_FLASH_SECTOR_12	((uint32_t)0x08100000) 	//æ‰‡åŒº12èµ·å§‹åœ°å€, 16 Kbytes
+#define ADDR_FLASH_SECTOR_13	((uint32_t)0x08104000) 	//æ‰‡åŒº13èµ·å§‹åœ°å€, 16 Kbytes
+#define ADDR_FLASH_SECTOR_14    ((uint32_t)0x08108000) 	//æ‰‡åŒº14èµ·å§‹åœ°å€, 16 Kbytes
+#define ADDR_FLASH_SECTOR_15	((uint32_t)0x0810C000) 	//æ‰‡åŒº15èµ·å§‹åœ°å€, 16 Kbytes
+#define ADDR_FLASH_SECTOR_16    ((uint32_t)0x08110000) 	//æ‰‡åŒº16èµ·å§‹åœ°å€, 64 Kbytes
+#define ADDR_FLASH_SECTOR_17	((uint32_t)0x08120000) 	//æ‰‡åŒº17èµ·å§‹åœ°å€, 128 Kbytes
+#define ADDR_FLASH_SECTOR_18	((uint32_t)0x08140000) 	//æ‰‡åŒº18èµ·å§‹åœ°å€, 128 Kbytes
+#define ADDR_FLASH_SECTOR_19	((uint32_t)0x08160000) 	//æ‰‡åŒº19èµ·å§‹åœ°å€, 128 Kbytes
+#define ADDR_FLASH_SECTOR_20    ((uint32_t)0x08180000) 	//æ‰‡åŒº20èµ·å§‹åœ°å€, 128 Kbytes
+#define ADDR_FLASH_SECTOR_21	((uint32_t)0x081A0000) 	//æ‰‡åŒº21èµ·å§‹åœ°å€, 128 Kbytes
+#define ADDR_FLASH_SECTOR_22    ((uint32_t)0x081C0000) 	//æ‰‡åŒº22èµ·å§‹åœ°å€, 128 Kbytes
+#define ADDR_FLASH_SECTOR_23    ((uint32_t)0x081E0000) 	//æ‰‡åŒº23èµ·å§‹åœ°å€, 128 Kbytes
+
+uint32_t STMFLASH_ReadWord(uint32_t faddr);		  	//è¯»å‡ºå­—
+void STMFLASH_Write(uint32_t WriteAddr,uint32_t *pBuffer,uint32_t NumToWrite);		//ä»æŒ‡å®šåœ°å€å¼€å§‹å†™å…¥æŒ‡å®šé•¿åº¦çš„æ•°æ®
+void STMFLASH_Read(uint32_t ReadAddr,uint32_t *pBuffer,uint32_t NumToRead);   		//ä»æŒ‡å®šåœ°å€å¼€å§‹è¯»å‡ºæŒ‡å®šé•¿åº¦çš„æ•°æ®
 
 #endif

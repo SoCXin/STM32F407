@@ -23,9 +23,16 @@ static char parser_frame(uint8_t data);
 static uint32_t ymodem_tx_data_packet(uint8_t **p_source, uint8_t *p_packet, uint8_t pkt_nr, uint32_t size_blk, uint8_t sent_mode);
 static void ymodem_tx_end_packet(uint8_t *p_data);
 static char ymodem_tx_packet(uint8_t data);
-
-void ymodem_tx_head_packet(uint8_t *p_data, const uint8_t *p_file_name,uint32_t file_name_length, uint32_t length,uint32_t  packet_size);
-
+/******************************************************************************
+**函数信息 ：
+**功能描述 ：
+**输入参数 ：无
+**输出参数 ：无
+*******************************************************************************/
+static void ymodem_reset()
+{
+    memset(&g_frame,0,sizeof(g_frame));
+}
 /******************************************************************************
 **函数信息 ：
 **功能描述 ：
@@ -55,17 +62,7 @@ void sys_com_regist_reccallback(uint32_t USARTx,void (*drv_com_m_handle)(unsigne
 	}
 }
 
-/******************************************************************************
-**函数信息 ：
-**功能描述 ：
-**输入参数 ：无
-**输出参数 ：无
-*******************************************************************************/
 
-static void ymodem_reset()
-{
-    memset(&g_frame,0,sizeof(g_frame));
-}
 /******************************************************************************
 **函数信息 ：
 **功能描述 ：
@@ -73,7 +70,6 @@ static void ymodem_reset()
 **输出参数 ：无
 *******************************************************************************/
 __IO char g_write_C_disable = 0;
-// 接受
 void ymodem_rx_handle(uint8_t *data,uint32_t rx_size)
 {
     int error_code = 0;
@@ -201,9 +197,13 @@ error_exit:
     g_ymodem.ymodem_rx_error_handle(error_code);
 }
 
-
+/******************************************************************************
+**函数信息 ：
+**功能描述 ：接受时间处理
+**输入参数 ：无
+**输出参数 ：无
+*******************************************************************************/
 int i = 0;
-// 接受时间处理
 void ymodem_rx_time_handle(void)
 {
     if(i++ <1000000) {
@@ -393,17 +393,15 @@ static char parser_frame(uint8_t data)
 
 /******************************************************************************
 **函数信息 ：
-**功能描述 ：
+**功能描述 ：打包发送数据包
 **输入参数 ：无
 **输出参数 ：无
 *******************************************************************************/
-// 打包发送数据包
 static uint32_t ymodem_tx_data_packet(uint8_t **p_source, uint8_t *p_packet, uint8_t pkt_nr, uint32_t size_blk, uint8_t sent_mode)
 {
     uint8_t *p_record;
     uint32_t i, size, packet_size;
     unsigned short mcrc = 0;
-
     // 剩余的数据用128字节还是1K字节传输
     packet_size = size_blk >= PACKET_1K_SIZE ? PACKET_1K_SIZE : PACKET_SIZE;
 		// 系统调用读取函数
@@ -480,6 +478,71 @@ void ymodem_tx_init(char *file_name,char file_name_len,uint32_t file_size)
 	g_modem_tx_packet.packet_file.name_data_size = file_name_len;
 	g_modem_tx_packet.packet_file.file_size = file_size;
 }
+/******************************************************************************
+**函数信息 ：
+**功能描述 ：
+**输入参数 ：无
+**输出参数 ：无
+*******************************************************************************/
+void ymodem_tx_head_packet(uint8_t *p_data, const uint8_t *p_file_name,uint32_t file_name_length, uint32_t length,uint32_t  packet_size)
+{
+    uint32_t i, j = 0;
+    uint8_t astring[10];
+
+    /* first 3 bytes are constant */
+    p_data[0] = SOH;
+    p_data[1] = 0x00;
+    p_data[2] = 0xff;
+
+    /* Filename written */
+    for (i = 0; (p_file_name[i] != '\0') && (i < file_name_length); i++)
+    {
+        p_data[i + 3] = p_file_name[i];
+    }
+
+    p_data[i + 3] = 0x00;
+
+    /* file size written */
+    Int2Str (astring, length);
+    i = i + 3 + 1;
+    while (astring[j] != '\0')
+    {
+        p_data[i++] = astring[j++];
+    }
+    /* padding with zeros */
+    for (j = i; j < packet_size + 3; j++)
+    {
+        p_data[j] = 0;
+    }
+    // crc data
+    unsigned short  mcrc = crc16(p_data+3,j-3);
+    p_data[j] = mcrc>>8;
+    p_data[j+1] = mcrc;
+    for(int i = 0; i< packet_size + 5; i++) {
+        g_ymodem.ymodem_write_byte(p_data[i]);
+    }
+}
+
+// end packet
+static void ymodem_tx_end_packet(uint8_t *p_data)
+{
+    uint32_t i = 0;
+    /* first 3 bytes are constant */
+    p_data[0] = 0x01;
+    p_data[1] = 0x00;
+    p_data[2] = 0xff;
+
+    /* Filename written */
+    for (i = 0; i<130; i++)
+    {
+        p_data[i + 3] = 0;
+    }
+    for(int i = 0; i< PACKET_SIZE + 5; i++) {
+        g_ymodem.ymodem_write_byte(p_data[i]);
+    }
+}
+
+
 
 
 /******************************************************************************
@@ -553,7 +616,7 @@ static char ymodem_tx_packet(uint8_t data)
     case PACKET_TX_WAIT_END_C:
         if(data == CNC) {
             ymodem_tx_end_packet(g_tx_buff);
-						printf("sent end\r\n");
+            printf("sent end\r\n");
         }
         break;
     default:
@@ -572,71 +635,6 @@ void ymodem_tx_handle(uint8_t  *buf, uint32_t sz)
 {
     for(int i = 0; i<sz; i++) {
         ymodem_tx_packet(buf[i]);
-    }
-}
-
-
-/******************************************************************************
-**函数信息 ：
-**功能描述 ：
-**输入参数 ：无
-**输出参数 ：无
-*******************************************************************************/
-void ymodem_tx_head_packet(uint8_t *p_data, const uint8_t *p_file_name,uint32_t file_name_length, uint32_t length,uint32_t  packet_size)
-{
-    uint32_t i, j = 0;
-    uint8_t astring[10];
-
-    /* first 3 bytes are constant */
-    p_data[0] = SOH;
-    p_data[1] = 0x00;
-    p_data[2] = 0xff;
-
-    /* Filename written */
-    for (i = 0; (p_file_name[i] != '\0') && (i < file_name_length); i++)
-    {
-        p_data[i + 3] = p_file_name[i];
-    }
-
-    p_data[i + 3] = 0x00;
-
-    /* file size written */
-    Int2Str (astring, length);
-    i = i + 3 + 1;
-    while (astring[j] != '\0')
-    {
-        p_data[i++] = astring[j++];
-    }
-    /* padding with zeros */
-    for (j = i; j < packet_size + 3; j++)
-    {
-        p_data[j] = 0;
-    }
-    // crc data
-    unsigned short  mcrc = crc16(p_data+3,j-3);
-    p_data[j] = mcrc>>8;
-    p_data[j+1] = mcrc;
-    for(int i = 0; i< packet_size + 5; i++) {
-        g_ymodem.ymodem_write_byte(p_data[i]);
-    }
-}
-
-// end packet
-static void ymodem_tx_end_packet(uint8_t *p_data)
-{
-    uint32_t i = 0;
-    /* first 3 bytes are constant */
-    p_data[0] = 0x01;
-    p_data[1] = 0x00;
-    p_data[2] = 0xff;
-
-    /* Filename written */
-    for (i = 0; i<130; i++)
-    {
-        p_data[i + 3] = 0;
-    }
-    for(int i = 0; i< PACKET_SIZE + 5; i++) {
-        g_ymodem.ymodem_write_byte(p_data[i]);
     }
 }
 

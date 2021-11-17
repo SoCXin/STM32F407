@@ -1,8 +1,7 @@
 #ifndef __KYMODEM_H
 #define __KYMODEM_H
 
-#include "common.h"
-
+#include "main.h"
 
 #define SOH (0x01)      /* start of 128-byte data packet */
 #define STX (0x02)      /* start of 1024-byte data packet */

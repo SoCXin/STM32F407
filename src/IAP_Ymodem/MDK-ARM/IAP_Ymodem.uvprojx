@@ -418,11 +418,6 @@
               <FileType>1</FileType>
               <FilePath>../Core/Src/stm32f4xx_hal_msp.c</FilePath>
             </File>
-            <File>
-              <FileName>test.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\Src\test.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -567,6 +562,11 @@
               <FileName>kymodem.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Ymodem\Src\kymodem.c</FilePath>
+            </File>
+            <File>
+              <FileName>test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Ymodem\test.c</FilePath>
             </File>
           </Files>
         </Group>

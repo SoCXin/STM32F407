@@ -1,8 +1,7 @@
 #include "kymodem.h"
-#include "usart.h"
 #include "drv_com.h"
 #include <string.h>
-
+#include "usart.h"
 
 ModemFrameTypedef g_frame;
 ModemFrameStateTypedef  g_frame_state;

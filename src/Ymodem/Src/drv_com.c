@@ -1,6 +1,8 @@
 #include "drv_com.h"
 #include "usart.h"
-
+#include <stdio.h>
+#include <stdint.h>
+#include <stdarg.h>
 
 
 

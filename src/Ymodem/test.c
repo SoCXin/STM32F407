@@ -1,11 +1,12 @@
-
-#include "stmflash.h"
+#include "main.h"
 #include "kymodem.h"
 #include "dev_com.h"
 #include "drv_com.h"
-#include "iap.h"
 #include "flash_if.h"
-#include "common.h"
+#include <stdio.h>
+#include <stdint.h>
+#include <stdarg.h>
+
 
 #define USE_RX_MODE
 #define KAPP_ADDR  (uint32_t)0x08004000

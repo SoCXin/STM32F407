@@ -29,10 +29,9 @@ extern void (*drv_com2_handle)(unsigned char data);
 extern void (*drv_com3_handle)(unsigned char data);
 extern void sys_com_regist_reccallback(uint32_t USARTx,void (*drv_com_m_handle)(unsigned char data));
 
-void driver_com_handle(void);
-void drv_com1_write(uint8_t data);
-void drv_com2_write(uint8_t data);
-void drv_com3_write(uint8_t data);
+void drv_com1_write(char data);
+void drv_com2_write(char data);
+void drv_com3_write(char data);
 
 // 端口控制器初始化
 void dev_comctrl_init(void);

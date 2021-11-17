@@ -5,9 +5,9 @@
 
 
 // 发送缓冲区
-#define TX_BUFF_SIZE (uint32_t)4096
+#define TX_BUFF_SIZE (uint32_t)2048
 // 接收缓冲区
-#define RX_BUFF_SIZE (uint32_t)4096
+#define RX_BUFF_SIZE (uint32_t)2048
 // 每次处理的最大字节数
 #define RX_DEAL_MAX_SIZE 2048
 

@@ -4,7 +4,6 @@
 #include "common.h"
 
 void driver_com_init(void);
-void driver_com_handle(void);
 void driver_com_exit(void);
 
 

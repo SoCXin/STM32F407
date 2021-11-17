@@ -1,7 +1,6 @@
 #include <string.h>
 #include <stdio.h>
 #include "ymodem.h"
-// #include "drv_com.h"
 #include "dev_com.h"
 #include "usart.h"
 
@@ -21,21 +20,10 @@ static unsigned short crc16(const unsigned char *buf, unsigned long count);
 static void crc16_reset(void);
 static void crc16_sum(uint8_t data);
 static char ymodem_parser_head(uint8_t  *buf, uint32_t sz ) ;
-static void parser_frame_reset(void);
 static char parser_frame(uint8_t data);
 static uint32_t ymodem_tx_data_packet(uint8_t **p_source, uint8_t *p_packet, uint8_t pkt_nr, uint32_t size_blk, uint8_t sent_mode);
 static void ymodem_tx_end_packet(uint8_t *p_data);
 static char ymodem_tx_packet(uint8_t data);
-/******************************************************************************
-**函数信息 ：
-**功能描述 ：
-**输入参数 ：无
-**输出参数 ：无
-*******************************************************************************/
-static void ymodem_reset()
-{
-    memset(&g_frame,0,sizeof(g_frame));
-}
 
 
 /******************************************************************************
@@ -99,8 +87,6 @@ void ymodem_rx_handle(uint8_t *data,uint32_t rx_size)
                     // drv_com2_write(ACK);
                     break;
             case PACKET_RX_FIND_DATA:
-
-
                 // 如果发送了EOT,代表数据传输完成
                 if(g_frame.head == EOT)
                 {
@@ -177,7 +163,9 @@ void ymodem_rx_handle(uint8_t *data,uint32_t rx_size)
     }
     return;
 error_exit:
-    ymodem_reset();
+    printf("error_exit:%d\r\n",error_code);
+    // ymodem_reset();
+    memset(&g_frame,0,sizeof(g_frame));
     //g_write_C_disable=0;
     g_modem_rx_packet.packet_state = PACKET_RX_WAIT;
     g_ymodem.ymodem_rx_error_handle(error_code);
@@ -195,12 +183,19 @@ void ymodem_rx_time_handle(void)
     if(i++ <1000000) {
     } else {
         i = 0;
-        if(g_write_C_disable==0) {
+        if(g_write_C_disable==0)
+        {
             g_ymodem.ymodem_write_byte(CNC);
         }
     }
 }
 
+/******************************************************************************
+**函数信息 ：
+**功能描述 ：接受时间处理
+**输入参数 ：无
+**输出参数 ：无
+*******************************************************************************/
 
 // int转字符串
 static void Int2Str(uint8_t *p_str, uint32_t intnum)
@@ -305,74 +300,88 @@ static char ymodem_parser_head(uint8_t  *buf, uint32_t sz ) //解析出头包中
 }
 
 
+/******************************************************************************
+**函数信息 ：
+**功能描述 ：打包发送数据包
+**输入参数 ：无
+**输出参数 ：无
+*******************************************************************************/
 // 解析器初始化
 static void parser_frame_reset(void)
 {
     g_frame_state.frame_state = FRAME_FIND_HEAD;
     g_frame_state.frame_data_now_index = 0;
 }
-
-
 // 解析数据帧
 static char parser_frame(uint8_t data)
 {
     switch(g_frame_state.frame_state)
     {
-    case FRAME_FIND_HEAD:
-        if(data ==  SOH || data == STX || data == EOT) {
-            g_frame.head = data;
-            g_frame_state.frame_state = FRAME_FIND_INDEX;
-            if(data ==  SOH) {
-                g_frame_state.frame_data_len = SOH_PACKET_SIZE;
+        case FRAME_FIND_HEAD:
+            if(data ==  SOH || data == STX || data == EOT)
+            {
+                g_frame.head = data;
+                g_frame_state.frame_state = FRAME_FIND_INDEX;
+                if(data ==  SOH) {
+                    g_frame_state.frame_data_len = SOH_PACKET_SIZE;
+                }
+                if(data == STX) {
+                    g_frame_state.frame_data_len = STX_PACKET_SIZE;
+                }
+                if(data == EOT)
+                {
+                    g_frame_state.frame_data_len = 0;
+                    g_frame_state.frame_state = 0;
+                    return FRAME_PARSER_OK;
+                }
             }
-            if(data == STX) {
-                g_frame_state.frame_data_len = STX_PACKET_SIZE;
+            else
+            {
+                return FRAME_PARSER_HEAE_ERROR;
             }
-            if(data == EOT) {
-                g_frame_state.frame_data_len = 0;
-                g_frame_state.frame_state = 0;
+            break;
+        case FRAME_FIND_INDEX:
+            g_frame.index = data;
+            g_frame_state.frame_state = FRAME_FIND_REINDEX;
+            break;
+        case FRAME_FIND_REINDEX:
+            if((uint8_t)(~data) == g_frame.index)
+            {
+                g_frame.re_index = data;
+                g_frame_state.frame_state = FRAME_FIND_DATA;
+
+            }
+            else
+            {
+                return FRAME_PARSER_REINDEX_NOTRQ_ERROR;
+            }
+            break;
+        case FRAME_FIND_DATA:
+            // add data
+            if(g_frame_state.frame_data_now_index==g_frame_state.frame_data_len)
+            {
+                g_frame.crc_H = data;
+                g_frame_state.frame_state = FRAME_FIND_CRC;
+                return FRAME_PARSER_RUN;
+            }
+            g_frame.data[g_frame_state.frame_data_now_index++] = data;
+            break;
+        case FRAME_FIND_CRC:
+            g_frame.crc_L = data;
+            // reset crc
+            crc16_reset();
+            // calc crc
+            for(int i = 0; i<g_frame_state.frame_data_len; i++)
+            {
+                crc16_sum(g_frame.data[i]);
+            }
+            // frame reset
+            parser_frame_reset();
+            if(((g_frame.crc_H<<8)+g_frame.crc_L) == g_frame_state.frame_crc)
+            {
                 return FRAME_PARSER_OK;
             }
-        } else {
-            return FRAME_PARSER_HEAE_ERROR;
-        }
-        break;
-    case FRAME_FIND_INDEX:
-        g_frame.index = data;
-        g_frame_state.frame_state = FRAME_FIND_REINDEX;
-        break;
-    case FRAME_FIND_REINDEX:
-        if((uint8_t)(~data) == g_frame.index) {
-            g_frame.re_index = data;
-            g_frame_state.frame_state = FRAME_FIND_DATA;
-
-        } else {
-            return FRAME_PARSER_REINDEX_NOTRQ_ERROR;
-        }
-        break;
-    case FRAME_FIND_DATA:
-        // add data
-        if(g_frame_state.frame_data_now_index==g_frame_state.frame_data_len) {
-            g_frame.crc_H = data;
-            g_frame_state.frame_state = FRAME_FIND_CRC;
-            return FRAME_PARSER_RUN;
-        }
-        g_frame.data[g_frame_state.frame_data_now_index++] = data;
-        break;
-    case FRAME_FIND_CRC:
-        g_frame.crc_L = data;
-        // reset crc
-        crc16_reset();
-        // calc crc
-        for(int i = 0; i<g_frame_state.frame_data_len; i++) {
-            crc16_sum(g_frame.data[i]);
-        }
-        // frame reset
-        parser_frame_reset();
-        if(((g_frame.crc_H<<8)+g_frame.crc_L) == g_frame_state.frame_crc) {
-            return FRAME_PARSER_OK;
-        }
-        return FRAME_PARSER_CRC_ERROR;
+            return FRAME_PARSER_CRC_ERROR;
     }
     return FRAME_PARSER_RUN;
 }

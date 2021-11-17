@@ -1,6 +1,7 @@
-#include "kymodem.h"
-#include "drv_com.h"
 #include <string.h>
+#include <stdio.h>
+#include "ymodem.h"
+#include "drv_com.h"
 #include "usart.h"
 
 ModemFrameTypedef g_frame;
@@ -570,7 +571,7 @@ static char ymodem_tx_packet(uint8_t data)
     default:
         break;
     }
-
+	return 0;
 }
 
 /******************************************************************************

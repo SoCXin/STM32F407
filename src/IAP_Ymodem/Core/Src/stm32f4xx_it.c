@@ -27,7 +27,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
-#include "kymodem.h"
+#include "ymodem.h"
 /* USER CODE END TD */
 
 /* Private define ------------------------------------------------------------*/

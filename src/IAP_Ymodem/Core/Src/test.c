@@ -1,11 +1,13 @@
+
+#include <stdio.h>
+#include <stdint.h>
+#include <stdarg.h>
 #include "main.h"
 #include "ymodem.h"
 #include "dev_com.h"
 #include "drv_com.h"
 #include "flash_if.h"
-#include <stdio.h>
-#include <stdint.h>
-#include <stdarg.h>
+
 
 
 #define USE_RX_MODE
@@ -14,8 +16,8 @@
 #include <stdio.h>
 int fputc(int ch, FILE *f)
 {
-		USART1->DR = (uint8_t)ch;
-		while((USART1->SR&0X40)==0);
+    LL_USART_TransmitData8(USART1,(uint8_t)ch);
+    while (LL_USART_IsActiveFlag_TXE(USART1)== RESET);
     return ch;
 }
 

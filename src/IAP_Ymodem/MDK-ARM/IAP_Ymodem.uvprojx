@@ -559,14 +559,14 @@
               <FilePath>..\..\Ymodem\Src\flash_if.c</FilePath>
             </File>
             <File>
-              <FileName>kymodem.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Ymodem\Src\kymodem.c</FilePath>
-            </File>
-            <File>
               <FileName>test.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Ymodem\test.c</FilePath>
+            </File>
+            <File>
+              <FileName>ymodem.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Ymodem\Src\ymodem.c</FilePath>
             </File>
           </Files>
         </Group>

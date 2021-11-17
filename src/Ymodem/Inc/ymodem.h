@@ -11,6 +11,24 @@
 #define CA (0x18)      /* two of these in succession aborts transfer */
 #define CNC (0x43)      /* character 'C' */
 
+#define ADDR_FLASH_SECTOR_0     ((uint32_t)0x08000000) /* Base @ of Sector 0, 16 Kbyte */
+#define ADDR_FLASH_SECTOR_1     ((uint32_t)0x08004000) /* Base @ of Sector 1, 16 Kbyte */
+#define ADDR_FLASH_SECTOR_2     ((uint32_t)0x08008000) /* Base @ of Sector 2, 16 Kbyte */
+#define ADDR_FLASH_SECTOR_3     ((uint32_t)0x0800C000) /* Base @ of Sector 3, 16 Kbyte */
+#define ADDR_FLASH_SECTOR_4     ((uint32_t)0x08010000) /* Base @ of Sector 4, 64 Kbyte */
+#define ADDR_FLASH_SECTOR_5     ((uint32_t)0x08020000) /* Base @ of Sector 5, 128 Kbyte */
+#define ADDR_FLASH_SECTOR_6     ((uint32_t)0x08040000) /* Base @ of Sector 6, 128 Kbyte */
+#define ADDR_FLASH_SECTOR_7     ((uint32_t)0x08060000) /* Base @ of Sector 7, 128 Kbyte */
+#define USER_FLASH_END_ADDRESS        0x0807FFFF
+//#define USER_FLASH_SIZE   (USER_FLASH_END_ADDRESS - APPLICATION_ADDRESS + 1)
+
+enum
+{
+    FLASHIF_OK = 0,
+    FLASHIF_ERASEKO,
+    FLASHIF_WRITINGCTRL_ERROR,
+    FLASHIF_WRITING_ERROR
+};
 
 #define FILE_NAME_LENGTH        ((uint32_t)64)
 #define FILE_SIZE_LENGTH        ((uint32_t)16)
@@ -131,6 +149,7 @@ typedef enum {
 typedef struct Ymodem_TypeDef_TAG
 {
 	void (*ymodem_rx_error_handle)(int error_code);
+    void (*ymodem_rx_callBack)(int data);
 	char (*ymodem_rx_head_handle)(char *file_name,uint16_t file_name_len, uint32_t file_len);
 	void (*ymodem_rx_data_handle)(char *data, uint16_t len,uint32_t download_byte,uint8_t percent);
 	void (*ymodem_rx_finish_handle)(int data);
@@ -140,11 +159,6 @@ typedef struct Ymodem_TypeDef_TAG
 
 // ≥ı ºªØ
 
-extern void (*drv_com1_handle)(unsigned char data);
-extern void (*drv_com2_handle)(unsigned char data);
-extern void (*drv_com3_handle)(unsigned char data);
-extern void (*drv_com4_handle)(unsigned char data);
-extern void sys_com_regist_reccallback(uint32_t USARTx,void (*drv_com_m_handle)(unsigned char data));
 
 void ymodem_init(Ymodem_TypeDef *ymodem);
 void ymodem_rx_handle(uint8_t *data,uint32_t len);

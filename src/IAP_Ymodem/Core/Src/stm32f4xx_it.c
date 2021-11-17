@@ -27,7 +27,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
-#include "ymodem.h"
+#include "dev_com.h"
 /* USER CODE END TD */
 
 /* Private define ------------------------------------------------------------*/

@@ -1,6 +1,6 @@
 
 #include "dev_com.h"
-#include "drv_com.h"
+#include "usart.h"
 #include <string.h>
 Com_paser_BuffTypedef m_com_buf;
 // 接收回调函数
@@ -101,4 +101,58 @@ void dev_comctrl_init(void)
 void dev_comctrl_regist_rx_callback(void (*arg_callBack)(unsigned char* data,uint32_t size))
 {
 	m_com_rev_callBack = arg_callBack;
+}
+
+
+void drv_com1_write(uint8_t data)
+{
+	USART1->DR = data;
+    while((USART1->SR&0X40)==0);
+	// LL_USART_TransmitData8(USART1,data);
+	// while (LL_USART_IsActiveFlag_TXE(USART1)== RESET);
+}
+void drv_com2_write(uint8_t data)
+{
+	USART2->DR = data;
+    while((USART2->SR&0X40)==0);
+	// LL_USART_TransmitData8(USART2,data);
+	// while (LL_USART_IsActiveFlag_TXE(USART2)== RESET);
+}
+void drv_com3_write(uint8_t data)
+{
+	USART3->DR = data;
+    while((USART3->SR&0X40)==0);
+	// LL_USART_TransmitData8(USART3,data);
+	// while (LL_USART_IsActiveFlag_TXE(USART3)== RESET);
+}
+
+/******************************************************************************
+**函数信息 ：
+**功能描述 ：
+**输入参数 ：无
+**输出参数 ：无
+*******************************************************************************/
+void (*drv_com1_handle)(unsigned char data);
+void (*drv_com2_handle)(unsigned char data);
+void (*drv_com3_handle)(unsigned char data);
+
+void sys_com_regist_reccallback(uint32_t USARTx,void (*drv_com_m_handle)(unsigned char data))
+{
+	switch(USARTx)
+	{
+		case 1:
+			drv_com1_handle = drv_com_m_handle;
+			break;
+		case 2:
+			drv_com2_handle = drv_com_m_handle;
+			break;
+		case 3:
+			drv_com3_handle = drv_com_m_handle;
+			break;
+	}
+}
+
+void driver_com_regist_reccallback(uint32_t USARTx,void (*drv_com_m_handle)(unsigned char data))
+{
+	sys_com_regist_reccallback(USARTx,drv_com_m_handle);
 }

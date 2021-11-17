@@ -1,14 +1,17 @@
 #include <string.h>
 #include <stdio.h>
 #include "ymodem.h"
-#include "drv_com.h"
+// #include "drv_com.h"
+#include "dev_com.h"
 #include "usart.h"
 
-ModemFrameTypedef g_frame;
-ModemFrameStateTypedef  g_frame_state;
-ModemPacketTypedef g_modem_rx_packet;
 Ymodem_TypeDef g_ymodem;
+
+ModemFrameTypedef g_frame;
+
+ModemPacketTypedef g_modem_rx_packet;
 ModemPacketTypedef g_modem_tx_packet;
+ModemFrameStateTypedef  g_frame_state;
 
 static uint8_t g_tx_buff[2048];
 
@@ -32,34 +35,6 @@ static char ymodem_tx_packet(uint8_t data);
 static void ymodem_reset()
 {
     memset(&g_frame,0,sizeof(g_frame));
-}
-/******************************************************************************
-**函数信息 ：
-**功能描述 ：
-**输入参数 ：无
-**输出参数 ：无
-*******************************************************************************/
-void (*drv_com1_handle)(unsigned char data);
-void (*drv_com2_handle)(unsigned char data);
-void (*drv_com3_handle)(unsigned char data);
-void (*drv_com4_handle)(unsigned char data);
-void sys_com_regist_reccallback(uint32_t USARTx,void (*drv_com_m_handle)(unsigned char data))
-{
-	switch(USARTx)
-	{
-		case 1:
-			drv_com1_handle = drv_com_m_handle;
-			break;
-		case 2:
-			drv_com2_handle = drv_com_m_handle;
-			break;
-		case 3:
-			drv_com3_handle = drv_com_m_handle;
-			break;
-		case 4:
-			drv_com4_handle = drv_com_m_handle;
-			break;
-	}
 }
 
 
@@ -473,6 +448,7 @@ static uint32_t ymodem_tx_data_packet(uint8_t **p_source, uint8_t *p_packet, uin
 *******************************************************************************/
 void ymodem_init(Ymodem_TypeDef *ymodem)
 {
+    dev_comctrl_init();
     g_ymodem = *ymodem;
 }
 // 复位

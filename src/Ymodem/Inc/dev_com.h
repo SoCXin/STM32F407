@@ -21,9 +21,21 @@ typedef struct
     unsigned int  Rx_read;
 }Com_paser_BuffTypedef;
 
+extern void driver_com_regist_reccallback(uint32_t USARTx,void (*drv_com_m_handle)(unsigned char data));
+extern void dev_comctrl_regist_rx_callback(void (*arg_callBack)(unsigned char* data,uint32_t size));
+
+extern void (*drv_com1_handle)(unsigned char data);
+extern void (*drv_com2_handle)(unsigned char data);
+extern void (*drv_com3_handle)(unsigned char data);
+extern void sys_com_regist_reccallback(uint32_t USARTx,void (*drv_com_m_handle)(unsigned char data));
+
+void driver_com_handle(void);
+void drv_com1_write(uint8_t data);
+void drv_com2_write(uint8_t data);
+void drv_com3_write(uint8_t data);
 
 // 端口控制器初始化
 void dev_comctrl_init(void);
 void dev_comctrl_handle(void);
-void dev_comctrl_regist_rx_callback(void (*arg_callBack)(unsigned char* data,uint32_t size));
+
 #endif

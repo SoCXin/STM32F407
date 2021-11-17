@@ -2,10 +2,7 @@
 #include "usart.h"
 
 
-void driver_com_init()
-{
 
-}
 
 void driver_com_regist_reccallback(uint32_t USARTx,void (*drv_com_m_handle)(unsigned char data))
 {
@@ -34,14 +31,12 @@ void drv_com2_write(uint8_t data)
 }
 void drv_com3_write(uint8_t data)
 {
-	LL_USART_TransmitData8(USART3,data);
-	while (LL_USART_IsActiveFlag_TXE(USART3)== RESET);
+	USART3->DR = data;
+    while((USART3->SR&0X40)==0);
+	// LL_USART_TransmitData8(USART3,data);
+	// while (LL_USART_IsActiveFlag_TXE(USART3)== RESET);
 }
-void drv_com4_write(uint8_t data)
-{
-	LL_USART_TransmitData8(UART4,data);
-	while (LL_USART_IsActiveFlag_TXE(UART4)== RESET);
-}
+
 /******************************************************************************
 **函数信息 ：
 **功能描述 ：
@@ -102,27 +97,10 @@ void drv_com3_printf(char *fmt, ...)
 	va_start(arg_ptr, fmt);
 	vsnprintf(buffer, 50, fmt, arg_ptr);
 	while(*p != '\0'){
-	LL_USART_TransmitData8(USART3,(uint8_t)*p++);
-	while (LL_USART_IsActiveFlag_TXE(USART3)== RESET);
-	}
-	va_end(arg_ptr);
-}
-/******************************************************************************
-**函数信息 ：
-**功能描述 ：
-**输入参数 ：无
-**输出参数 ：无
-*******************************************************************************/
-void drv_com4_printf(char *fmt, ...)
-{
-	char buffer[50];
-	char *p = buffer;
-	va_list arg_ptr;
-	va_start(arg_ptr, fmt);
-	vsnprintf(buffer, 50, fmt, arg_ptr);
-	while(*p != '\0'){
-	LL_USART_TransmitData8(UART4,(uint8_t)*p++);
-	while (LL_USART_IsActiveFlag_TXE(UART4)== RESET);
+		USART3->DR = (uint8_t)*p++ ;
+        while((USART3->SR&0X40)==0);
+	// LL_USART_TransmitData8(USART3,(uint8_t)*p++);
+	// while (LL_USART_IsActiveFlag_TXE(USART3)== RESET);
 	}
 	va_end(arg_ptr);
 }

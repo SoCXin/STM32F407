@@ -212,10 +212,10 @@ void test(void)
 	Ymodem_TypeDef ymodem;
 // //   ymodem.rx_interrupt=
 // 	ymodem.ymodem_tx_byte = drv_com3_write;
-   ymodem.ymodem_rx_callback = ymodem_rx_handle;
+    ymodem.ymodem_rx_callback = ymodem_rx_handle;
 	ymodem.ymodem_rx_head_handle = g_ymodem_rx_head_handle;
 	ymodem.ymodem_rx_data_handle = g_ymodem_rx_data_handle;
-   ymodem.ymodem_rx_error_handle = g_ymodem_rx_error_handle;
+    ymodem.ymodem_rx_error_handle = g_ymodem_rx_error_handle;
 	ymodem.rx_done_handle = g_ymodem_iap_done_handle;
 	ymodem.ymodem_tx_data_handle = g_ymodem_tx_data_handle;
 	ymodem_init(&ymodem);
